@@ -4,9 +4,11 @@ class Controller {
     
     // Nạp Model tính từ thư mục gốc
     public function model($modelName) {
-        if (file_exists("app/models/" . $modelName . ".php")) {
-            require_once "app/models/" . $modelName . ".php";
-            return new $modelName();
+         $fileName = strtolower($modelName) . ".model.php";
+         $className = ucfirst($modelName) . "Model";
+        if (file_exists("app/models/" . $fileName)) {
+            require_once "app/models/" . $fileName;
+            return new $className();
         } else {
             die("Lỗi: Không tìm thấy Model $modelName");
         }

@@ -20,28 +20,6 @@ class SignupController extends Controller {
             $this->pwd = trim($_POST["pwd"]);
             $this->pwdRepeat = trim($_POST["pwdRepeat"]);
             $this->email = trim($_POST["email"]);
-
-            // if ($this->emptyInput()){
-            //     header("Location: " . URLROOT . "/signup?error=emptyinput");
-            //     exit();
-            // }
-            // if ($this->inValidUid()){
-            //     header("Location: " . URLROOT . "/signup?error=username");
-            //     exit();
-            // }
-            // if ($this->inValidEmail()){
-            //     header("Location: " . URLROOT . "/signup?error=email");
-            //     exit();
-            // }
-            // if ($this->pwdMatch()){
-            //     header("Location: " . URLROOT . "/signup?error=passwordmatch");
-            //     exit();
-            // }
-            // if ($this->uidTakenCheck()){
-            //     header("Location: " . URLROOT . "/signup?error=useroremailtaken");
-            //     exit();
-            // }
-
             if ($this->emptyInput()){
                 echo json_encode(['status' => 'error', 'message' => 'Vui lòng điền đầy đủ thông tin!']);
                 exit();
@@ -64,7 +42,7 @@ class SignupController extends Controller {
             }
 
             // Gọi Model để lưu tài khoản vào DB
-            $signupModel = $this->model('SignupModel');
+            $signupModel = $this->model('users');
             $signupModel->setUser($this->uid, $this->pwd, $this->email);
 
             // Thành công thì đá về lại trang đăng ký hoặc trang nào bạn muốn
@@ -110,8 +88,8 @@ class SignupController extends Controller {
     }
     private function uidTakenCheck() {
         $result = false;
-        $signupModel = $this->model('SignupModel');
-        if (!$signupModel->checkUser($this->uid, $this->email)){
+        $UserModel= $this->model('users');
+        if (!$UserModel->checkUser($this->uid, $this->email)){
             $result = true;
         }
         return $result;

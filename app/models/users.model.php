@@ -1,6 +1,6 @@
 <?php
 
-class SignupModel extends DatabaseUser {
+class UsersModel extends DatabaseUser {
 
     // Hàm kiểm tra xem Username hoặc Email đã bị ai đăng ký chưa
     public function checkUser($uid, $email) {
@@ -31,5 +31,19 @@ class SignupModel extends DatabaseUser {
             exit();
         }
         $stmt = null;
+    }
+
+    public function getUser($userInput) {
+        $stmt = $this->connect()->prepare(
+            "SELECT * FROM users
+            WHERE users_uid = ?
+            OR users_email = ?"
+        );
+
+        if (!$stmt->execute([$userInput, $userInput])) {
+            return false;
+        }
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $user;
     }
 }
