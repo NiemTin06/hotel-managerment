@@ -1,0 +1,17 @@
+# 1. Bảo mật: Cấm không cho trình duyệt tự ý liệt kê danh sách file trong thư mục
+Options -Indexes
+
+# 2. Kích hoạt bộ máy ghi lại đường dẫn (Rewrite Engine)
+RewriteEngine On
+
+# 3. Điểm mốc tính toán đường dẫn ảo (Tính từ thư mục gốc của dự án)
+RewriteBase /hotel-manager/
+
+# 4. Điều kiện: Nếu yêu cầu KHÔNG PHẢI là một file vật lý đang tồn tại (như hình ảnh, file css, js)
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# 5. Điều kiện: Nếu yêu cầu KHÔNG PHẢI là một thư mục vật lý đang tồn tại trên ổ cứng
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# 6. Quy tắc: Gom toàn bộ chuỗi URL ảo người dùng gõ ngầm định hướng về file index.php gốc xử lý
+RewriteRule ^(.*)$ index.php [QSA,L]
