@@ -1,9 +1,35 @@
 <?php
 
 class RoomsModel extends Database {
-    public function getAllRooms() {
-        $stmt = $this->connect()->prepare("SELECT * FROM `Room`");
-        $stmt->execute();
+    public function getAllRooms(array $filters = []) {
+        $sql = "SELECT * FROM `Room` WHERE 1 = 1";
+        $params = [];
+        
+        // Lọc theo trạng thái
+        if (!empty($filters['status'])) {
+            $sql .= " AND ROOM_STATUS = ?";
+            $params[] = $filters['status'];
+        }
+
+        // Lọc theo loại phòng
+        if (!empty($filters['room-type'])) {
+            $sql .= " AND ROOM_ROOMTYPE_ID = ?";
+            $params[] = $filters['room-type'];
+        }
+
+        // Sắp xếp
+        $sortMap = [
+            'price_asc'        => 'ROOM_PRICE_PER_NIGHT ASC',
+            'price_desc'       => 'ROOM_PRICE_PER_NIGHT DESC',
+            'room_number_asc'  => 'ROOM_NUMBER ASC',
+            'room_number_desc' => 'ROOM_NUMBER DESC',
+        ];
+
+        if (!empty($filters['sort-by']) && isset($sortMap[$filters['sort-by']])) {
+            $sql .= " ORDER BY " . $sortMap[$filters['sort-by']];
+        }
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

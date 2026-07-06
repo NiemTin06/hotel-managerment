@@ -1,10 +1,3 @@
-import {changeMulti} from '../helper/change-multi.js';
-import {loadRooms} from '../helper/load-room.js';
+import { initRoom } from "../helper/index.js";
 
-
-async function init() {
-    await loadRooms();
-    changeMulti();
-}
-
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", initRoom);

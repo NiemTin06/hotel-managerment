@@ -13,8 +13,13 @@ class RoomController extends Controller {
     }
 
     public function getRoomData() {
+        $filter = [
+            'status' => $_GET['status'] ?? '',
+            'room-type' => $_GET['room-type'] ?? '',
+            'sort-by' => $_GET['sort-by'] ?? ''
+        ];
         $roomsModel = $this->model('rooms');
-        $rooms = $roomsModel->getAllRooms();
+        $rooms = $roomsModel->getAllRooms($filter);
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($rooms);
         exit();

@@ -20,11 +20,15 @@
                     </div>
                 </div>
             </form>
-            <form id="filter-form" class="row g-3">
+            <form 
+                class="row g-3"
+                filter-form
+                action =""
+            >
                 <div class="col-3">
                     <label for="sort-by" class="form-label">Sắp xếp theo</label>
-                    <select id="sort-by" class="form-select">
-                        <option value="default">Mặc định</option>
+                    <select id="sort-by" name = "sort-by" class="form-select">
+                        <option value="">Mặc định</option>
                         <option value="price_asc">Giá tăng dần</option>
                         <option value="price_desc">Giá giảm dần</option>
                         <option value="room_number_asc">Số phòng A-Z</option>
@@ -33,18 +37,19 @@
                 </div>
                 <div class="col-3">
                     <label for="room-type" class="form-label">Loại phòng</label>
-                    <select id="room-type" class="form-select">
+                    <select id="room-type" name ="room-type" class="form-select">
                         <option value="">Tất cả</option>
                     </select>
                 </div>
                 <div class="col-3">
                     <label for="status" class="form-label">Trạng thái</label>
-                    <select id="status" class="form-select">
+                    <select id="status" name ="status" class="form-select">
                         <option value="">Tất cả</option>
-                        <option value="available">Còn trống</option>
-                        <option value="occupied">Đang sử dụng</option>
-                        <option value="maintenance">Bảo trì</option>
-                        <option value="reserved">Đã đặt trước</option>
+                        <option value="Available">Còn trống</option>
+                        <option value="Booked">Đã đặt</option>
+                        <option value="Occupied">Đang sử dụng</option>
+                        <option value="Maintenance">Bảo trì</option>
+                        <option value="Deleted">Ngừng hoạt động</option>
                     </select>
                 </div>
                 <div class="col-3 d-flex align-items-end">
