@@ -12,7 +12,7 @@ class SignupController extends Controller {
             'title' => 'Đăng Ký Hệ Thống',
             'view_content' => 'pages/auth/signup' 
         ];
-        $this->view('layout/main_layout', $data);
+        $this->view('admin/layout/main_layout', $data);
     }
     public function signupUser(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {

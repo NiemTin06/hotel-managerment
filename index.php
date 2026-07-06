@@ -5,13 +5,13 @@ require_once 'app/config/config.php';
 // 2. Nạp bộ khung hệ thống (Core)
 require_once 'app/core/App.php';
 require_once 'app/core/Controller.php';
-require_once 'app/core/DatabaseUser.php';
+require_once 'app/core/Database.php';
 
 // 3. Khởi tạo đối tượng Router
 $app = new App();
 
 // 4. Nạp bản đồ đường dẫn ảo
-require_once 'app/routes/index.route.php';
+require_once 'app/routes/admin/index.route.php';
 
 // 5. Kích hoạt hệ thống quét URL
 $app->run();

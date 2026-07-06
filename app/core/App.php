@@ -10,6 +10,14 @@ class App{
         $this->routes['POST'][$url] = $action;
     }
 
+    public function patch($url, $action) {
+        $this->routes['PATCH'][$url] = $action;
+    }
+
+    public function delete($url, $action) {
+        $this->routes['DELETE'][$url] = $action;
+    }
+
     public function run(){
         $requestUrl = $_SERVER['REQUEST_URI'];
         $requestUrl = explode('?', $requestUrl)[0]; // Bỏ biến ?id=... nếu có
@@ -31,12 +39,20 @@ class App{
             $fileName = strtolower(preg_replace('/(?<!^)[A-Z]/', '.$0', $controllerName));
             // Vì file index.php gọi từ ngoài gốc, đường dẫn kéo controller tính từ gốc
 
-            if (file_exists("app/controllers/" . $fileName . ".php")) {
-                require_once "app/controllers/" . $fileName . ".php";
+            if (file_exists("app/controllers/admin/" . $fileName . ".php")) {
+                require_once "app/controllers/admin/" . $fileName . ".php";
                 
                 $controllerObj = new $controllerName();
                 $controllerObj->$actionName();
-            } else {
+            }
+            else if (file_exists("app/controllers/client/" . $fileName . ".php")) {
+                require_once "app/controllers/client/" . $fileName . ".php";
+                
+                $controllerObj = new $controllerName();
+                $controllerObj->$actionName();
+            } 
+        
+            else {
                 die("Lỗi: Không tìm thấy file Controller: $controllerName");
             }
         } else {

@@ -1,6 +1,6 @@
 <?php
 
-class UsersModel extends DatabaseUser {
+class UsersModel extends Database {
 
     // Hàm kiểm tra xem Username hoặc Email đã bị ai đăng ký chưa
     public function checkUser($uid, $email) {

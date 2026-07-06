@@ -7,8 +7,8 @@ class HomeController extends Controller {
             'description' => 'Hệ thống quản lý đặt phòng khách sạn thông minh.'
         ];
 
-        // Nạp file giao diện trang chủ: app/views/home/index.php
-        $this->view('pages/home/index', $data);
+        // Nạp file giao diện trang chủ: app/views/admin/pages/home/index.php
+        $this->view('admin/pages/home/index', $data);
 
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-class DatabaseUser {
+class Database{
     protected function connect(){
         try{
             $username = "root";
