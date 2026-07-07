@@ -16,7 +16,8 @@ class RoomController extends Controller {
         $filter = [
             'status' => $_GET['status'] ?? '',
             'room-type' => $_GET['room-type'] ?? '',
-            'sort-by' => $_GET['sort-by'] ?? ''
+            'sort-by' => $_GET['sort-by'] ?? '',
+            'search' => $_GET['search'] ?? ''
         ];
         $roomsModel = $this->model('rooms');
         $rooms = $roomsModel->getAllRooms($filter);

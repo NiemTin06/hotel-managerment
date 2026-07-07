@@ -11,7 +11,11 @@
             <h5>Bộ lọc và Tìm kiếm</h5>
         </div>
         <div class="card-body">
-            <form id="form-search" class="row g-3 mb-3"> 
+            <form 
+                class="row g-3"
+                filter-form
+                action =""
+            >
                 <div class="col-6"></div>
                 <div class="col-6 d-flex justify-content-end">
                     <div class="input-group">
@@ -19,12 +23,6 @@
                         <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                     </div>
                 </div>
-            </form>
-            <form 
-                class="row g-3"
-                filter-form
-                action =""
-            >
                 <div class="col-3">
                     <label for="sort-by" class="form-label">Sắp xếp theo</label>
                     <select id="sort-by" name = "sort-by" class="form-select">

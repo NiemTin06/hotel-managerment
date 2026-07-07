@@ -1,3 +1,3 @@
-import { initRoom } from "../helper/index.js";
+import { initRoom } from "../helper/room/index.js";
 
 document.addEventListener("DOMContentLoaded", initRoom);

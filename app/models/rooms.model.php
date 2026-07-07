@@ -17,6 +17,11 @@ class RoomsModel extends Database {
             $params[] = $filters['room-type'];
         }
 
+        if (!empty($filters['search'])) {
+            $sql .= " AND ROOM_NUMBER LIKE ?";
+            $params[] = '%' . $filters['search'] . '%';
+        }
+
         // Sắp xếp
         $sortMap = [
             'price_asc'        => 'ROOM_PRICE_PER_NIGHT ASC',

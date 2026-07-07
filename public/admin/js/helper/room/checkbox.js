@@ -8,7 +8,7 @@ export function checkboxMulti() {
         //         input.checked = checkBoxMulti.checked;
         //     });
         // });
-         if (!checkBoxMulti.dataset.bound) {
+        if (!checkBoxMulti.dataset.bound) {
         checkBoxMulti.addEventListener("click", () => {
             // Query lại tại thời điểm click để lấy đúng checkbox con hiện tại (mới nhất)
             document.querySelectorAll("input[name='id']").forEach(input => {
