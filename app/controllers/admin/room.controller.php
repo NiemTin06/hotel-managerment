@@ -11,7 +11,6 @@ class RoomController extends Controller {
         $this->view('admin/layout/main_layout', $data);
         exit();
     }
-
     public function getRoomData() {
         $filter = [
             'status' => $_GET['status'] ?? '',
@@ -42,6 +41,17 @@ class RoomController extends Controller {
         } else {
             echo json_encode(['success' => false, 'message' => 'Vui lòng cung cấp danh sách ID và trạng thái mới.']);
         }
+        exit();
+    }
+    public function create(){
+        // Chuẩn bị dữ liệu hiển thị (ví dụ tên khách sạn)
+        $data = [
+            'title' => 'Thêm phòng mới',
+            'description' => 'Hệ thống quản lý đặt phòng khách sạn thông minh.',
+            'view_content' => 'pages/room/create' ,
+            'page_script' => 'room'
+        ];
+        $this->view('admin/layout/main_layout', $data);
         exit();
     }
 }
