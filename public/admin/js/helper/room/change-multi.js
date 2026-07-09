@@ -1,5 +1,5 @@
-import { API } from '../api/api.js';
-import {loadRooms} from '../helper/load-room.js';
+import { API } from '../../api/api.js';
+import {loadRooms} from './load-room.js';
 export function changeMulti() {
     const formChangeMulti = document.querySelector("[form-change-multi]");
     formChangeMulti.addEventListener("submit", async (e)=>{
@@ -17,6 +17,7 @@ export function changeMulti() {
             }
             else {
                 const ids = Array.from(inputChecked).map(input => input.value);
+                console.log(ids)
                 let action = formChangeMulti.getAttribute("action");
                 try {
                     const data = await API.patch('admin/rooms/change-multi', { ids: ids.join(","), status: statusChange });

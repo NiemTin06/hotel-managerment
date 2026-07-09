@@ -1,0 +1,42 @@
+<div class="card mb-3">
+        <div class="card-header ">
+            <h5>Quản lý phòng</h5>    
+        </div>
+        <div class="card-body">
+            <div class="row align-items-end g-2">    
+                <div class="col-6">
+                    <form
+                        action = "<?= URLROOT ?>/admin/rooms/change-multi"
+                        method="post"
+                        form-change-multi
+                        class = "d-flex gap-2 align-items-end"
+                    >
+                        <div class="form-group">
+                            <label for="bulk-status" class="form-label mb-2">
+                                Cập nhật trạng thái
+                            </label>
+                            <select id="bulk-status" class="form-select" name ="status">
+                                <option value="">Giữ nguyên</option>
+                                <option value="Available">Còn trống</option>
+                                <option value="Booked">Đã đặt</option>
+                                <option value="Occupied">Đang sử dụng</option>
+                                <option value="Maintenance">Bảo trì</option>
+                                <option value="Deleted">Ngừng hoạt động</option>
+                            </select>
+                        </div>
+                        <div class = "form-group">
+                            <button
+                                type="submit"
+                                class="btn btn-success"
+                            >
+                                Áp dụng
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-6 d-flex justify-content-end">
+                    <a href="<?= URLROOT ?>/admin/rooms/create" class="btn btn-primary ms-3">Thêm phòng mới</a>
+                </div>
+            </div>
+        </div>
+    </div>

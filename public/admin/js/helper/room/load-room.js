@@ -1,4 +1,4 @@
-import { API } from '../api/api.js';
+import { API } from '../../api/api.js';
 import {renderRooms} from './render-room.js';
 
 export async function loadRooms (){

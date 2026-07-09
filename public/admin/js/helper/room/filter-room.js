@@ -14,9 +14,6 @@ export function initFilterRoom() {
         const params = new URLSearchParams(new FormData(form));
 
         const rooms = await API.get(`rooms/data?${params.toString()}`);
-
-        console.log(rooms);
-
         renderRooms(rooms);
     });
 }
