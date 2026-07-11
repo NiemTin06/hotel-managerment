@@ -1,5 +1,9 @@
 <?php
 // 1. Nạp file cấu hình hệ thống
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once 'app/config/config.php';
 
 // 2. Nạp bộ khung hệ thống (Core)

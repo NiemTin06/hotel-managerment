@@ -6,7 +6,9 @@ class RoomController extends Controller {
             'title' => 'Danh sách phòng khách sạn',
             'description' => 'Hệ thống quản lý đặt phòng khách sạn thông minh.',
             'view_content' => 'pages/room/index' ,
-            'page_script' => 'room'
+            'page_script' => 'room',
+            'dir-view' => 'rooms',
+            'link' => 'rooms'
         ];
         $this->view('admin/layout/main_layout', $data);
         exit();
@@ -24,6 +26,7 @@ class RoomController extends Controller {
         echo json_encode($rooms);
         exit();
     }
+
     public function changeMulti() {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $ids = $input['ids'] ?? '';

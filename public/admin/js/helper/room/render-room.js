@@ -1,4 +1,4 @@
-import {checkboxMulti} from './checkbox.js';
+import {checkboxMulti} from '../common/checkbox.js';
 
 export function renderRooms(rooms) {
     const roomListContainer = document.querySelector("#room-list");

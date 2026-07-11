@@ -1,3 +1,7 @@
+<?php
+/** @var array $data */
+?>
+
 <div class="card mb-3">
         <div class="card-header ">
             <h5>Quản lý phòng</h5>    
@@ -16,12 +20,16 @@
                                 Cập nhật trạng thái
                             </label>
                             <select id="bulk-status" class="form-select" name ="status">
-                                <option value="">Giữ nguyên</option>
+                                <!-- <option value="">Giữ nguyên</option>
                                 <option value="Available">Còn trống</option>
                                 <option value="Booked">Đã đặt</option>
                                 <option value="Occupied">Đang sử dụng</option>
-                                <option value="Maintenance">Bảo trì</option>
-                                <option value="Deleted">Ngừng hoạt động</option>
+                                <option value="Maintenance">Bảo trì</option> -->
+                                <?php foreach ($status as $item): ?>
+                                    <option value="<?= $item["value"] ?>">
+                                        <?= $item["label"] ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class = "form-group">
@@ -35,7 +43,11 @@
                     </form>
                 </div>
                 <div class="col-6 d-flex justify-content-end">
-                    <a href="<?= URLROOT ?>/admin/rooms/create" class="btn btn-primary ms-3">Thêm phòng mới</a>
+                    <button 
+                        class="btn btn-primary ms-3" 
+                        id ="btnCreatePopup" 
+                    >
+                        Thêm phòng mới</a>
                 </div>
             </div>
         </div>

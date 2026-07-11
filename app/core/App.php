@@ -36,7 +36,7 @@ class App{
 
             
             //  Dòng mới: Ép chữ "LoginController" thành "login.controller" để tìm đúng file của bạn
-            $fileName = strtolower(preg_replace('/(?<!^)[A-Z]/', '.$0', $controllerName));
+            $fileName = strtolower(str_replace('Controller', '.controller', $controllerName));
             // Vì file index.php gọi từ ngoài gốc, đường dẫn kéo controller tính từ gốc
 
             if (file_exists("app/controllers/admin/" . $fileName . ".php")) {
