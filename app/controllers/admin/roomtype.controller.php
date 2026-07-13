@@ -106,7 +106,7 @@ class RoomTypeController extends Controller
         echo json_encode($roomType);
         exit();
     }
-     public function update($id)
+    public function update($id)
     {
         try {
 
@@ -142,4 +142,5 @@ class RoomTypeController extends Controller
             exit();
         }
     }
+    
 }

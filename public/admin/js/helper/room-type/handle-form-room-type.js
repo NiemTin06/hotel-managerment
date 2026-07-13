@@ -1,5 +1,6 @@
 import { bindUpdateButton } from "./update-room-type.js";
 import { loadItem } from "../common/load-item.js";
+import { initDetailRoomType } from "./detail-room-type.js";
 
 export function handleFormRoomType () {
     // pop up create item 
@@ -109,6 +110,8 @@ export function handleFormRoomType () {
             popupContainer.classList.remove("show");
             await loadItem("admin/rooms-type", "room-type-list");
             handleFormRoomType();
+            initDetailRoomType();
+
         });
     }
 }

@@ -6,4 +6,3 @@ $app->post('/admin/rooms-type/create', 'RoomTypeController@create');
 $app->patch('/admin/rooms-type/change-multi', 'RoomTypeController@changeMulti');
 $app->get('/admin/rooms-type/{id}', 'RoomTypeController@getRoomTypeOne');
 $app->post('/admin/rooms-type/update/{id}', 'RoomTypeController@update');
-// $app->get('/admin/rooms-type/{slug}','RoomTypeController@detail');

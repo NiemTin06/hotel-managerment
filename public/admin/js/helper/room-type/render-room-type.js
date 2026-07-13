@@ -1,4 +1,5 @@
 import {checkboxMulti} from '../common/checkbox.js';
+
 // import { initPopUp } from '../common/popup.js';
 
 // import { checkboxMulti } from "../common/checkbox";
@@ -37,7 +38,7 @@ export function renderRoomType(roomstype, container) {
                     
                     <td class="align-middle text-secondary">${discount}%</td>
                     <td class="align-middle">${roomtype.ROOMTYPE_DESCRIPTION ?? "Không có mô tả"}</td>
-                    <td class= "align-midle"> ${statusHtml}</td> 
+                    <td class= "align-middle"> ${statusHtml}</td> 
                     
                     
                     <td class="align-middle">
@@ -59,5 +60,4 @@ export function renderRoomType(roomstype, container) {
         checkBoxMulti.checked = false;
     }
     checkboxMulti();
-    // initPopUp();
 }
