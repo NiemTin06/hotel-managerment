@@ -1,4 +1,5 @@
 import {checkboxMulti} from '../common/checkbox.js';
+// import { initPopUp } from '../common/popup.js';
 
 // import { checkboxMulti } from "../common/checkbox";
 
@@ -18,7 +19,10 @@ export function renderRoomType(roomstype, container) {
                 ? `<img src="/hotel-manager/public/uploads/roomtypes/${roomtype.ROOMTYPE_THUMBNAIL}" alt="${roomtype.ROOMTYPE_NAME}">`
                 : 
                 `<span class="text-muted">Không có ảnh</span>`;
-            // 3. Khớp chính xác với cấu trúc $tableHeader gồm 8 cột của bạn
+            // 3. Xử lý status
+            const statusHtml = roomtype.ROOMTYPE_STATUS === "Active"
+                ? `<span class="badge bg-success">Hoạt động</span>`
+                : `<span class="badge bg-danger">Ngừng hoạt động</span>`;
             return `
                 <tr>
                     <td>
@@ -32,14 +36,16 @@ export function renderRoomType(roomstype, container) {
                     <td class="align-middle text-success fw-bold">${Number(finalPrice).toLocaleString("vi-VN")} VNĐ</td>
                     
                     <td class="align-middle text-secondary">${discount}%</td>
-                    
                     <td class="align-middle">${roomtype.ROOMTYPE_DESCRIPTION ?? "Không có mô tả"}</td>
+                    <td class= "align-midle"> ${statusHtml}</td> 
                     
                     
                     <td class="align-middle">
-                        <button class="btn btn-sm btn-warning" data-id="${roomtype.ROOMTYPE_ID}">Sửa</button>
-                        <button class="btn btn-sm btn-danger" data-id="${roomtype.ROOMTYPE_ID}">Xóa</button>
-                        <button class="btn btn-sm btn-secondary" data-id="${roomtype.ROOMTYPE_ID}">Chi tiết</button>
+                        <button class="btn btn-sm btn-warning  btn-update-popup" data-id="${roomtype.ROOMTYPE_ID}" update-room-type>Sửa</button>
+
+                        <button class="btn btn-sm btn-danger" data-id="${roomtype.ROOMTYPE_ID}" delete-room-type>Xóa</button>
+
+                        <button class="btn btn-sm btn-secondary" data-id="${roomtype.ROOMTYPE_ID}" detail-room-type>Chi tiết</button>
                     </td>
                 </tr>
             `;
@@ -53,4 +59,5 @@ export function renderRoomType(roomstype, container) {
         checkBoxMulti.checked = false;
     }
     checkboxMulti();
+    // initPopUp();
 }

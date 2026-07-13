@@ -1,11 +1,11 @@
+import { changeMulti } from "../common/change-multi.js";
+import { initFilter } from "../common/filter.js";
 import { loadItem } from "../common/load-item.js";
-import { createRoomType } from "./create-room-type.js";
-// import { initFilterRoom } from "./filter-room.js";
-// import { changeMulti } from "./change-multi.js";
+import { handleFormRoomType } from "./handle-form-room-type.js";
 
 export async function initRoomType() {
     await loadItem("admin/rooms-type", "room-type-list");
-    createRoomType();
-    // initFilterRoom();
-    // changeMulti();
+    handleFormRoomType()
+    initFilter("admin/rooms-type","room-type-list");
+    changeMulti("Loại phòng","admin/rooms-type", "room-type-list");
 }

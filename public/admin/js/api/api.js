@@ -61,7 +61,7 @@ export class API {
 
         } catch (error) {
 
-            console.error("API Error:", error);
+            console.log("API Error:", error);
             throw error;
 
         }

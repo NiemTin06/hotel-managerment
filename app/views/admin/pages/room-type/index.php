@@ -10,6 +10,7 @@
         <th>Giá phòng</th>
         <th>Giảm giá</th>
         <th>Mô tả</th>
+        <th>Trạng thái </th>
         <th>Hành động</th>
     </tr>
     ';
@@ -19,6 +20,74 @@
         ["label" => "Hoạt động", "value" => "Active"],
         ["label" => "Không hoạt động", "value" => "Inactive"],
     ];
+    $sortOptions = [
+        "" => "Mặc định",
+        "price_asc" => "Giá tăng dần",
+        "price_desc" => "Giá giảm dần",
+        "name_asc" => "loại phòng A-Z",
+        "name_desc" => "loại phòng Z-A",
+    ];
+
+    $statusOptions = [
+        "" => "Tất cả",
+        "Active" => "Đang hoạt động",
+        "Inactive" => "Ngừng hoạt động "
+    ];
+
+    $maxGuests = [
+        [
+            "value" => "",
+            "label" => "Mặc định"
+        ],
+        [
+            "value" => 1,
+            "label" => "1 người"
+        ],
+        [
+            "value" => 2,
+            "label" => "2 người"
+        ],
+        [
+            "value" => 3,
+            "label" => "3 người"
+        ],
+        [
+            "value" => 4,
+            "label" => "4 người"
+        ],
+        [
+            "value" => 5,
+            "label" => "5 người"
+        ],
+        [
+            "value" => 6,
+            "label" => "6 người"
+        ],
+    ];
+
+    $bedTypes = [
+        [
+            "value" => "",
+            "label" => "Mặc định"
+        ],
+        [
+            "value" => "singleBed",
+            "label" => "Giường đơn"
+        ],
+        [
+            "value" => "doubleBed",
+            "label" => "Giường đôi"
+        ],
+        [
+            "value" => "queenBed",
+            "label" => "Giường Queen"
+        ],
+        [
+            "value" => "kingBed",
+            "label" => "Giường King"
+        ]
+    ];
+
 ?>
 <div class="container py-4">
     <div class="text-center mb-4">
@@ -28,6 +97,6 @@
     <?php require_once __DIR__ .  '/../../components/filter.php';  ?>
     <?php require_once __DIR__ .  '/../../components/toolbar.php'; ?>
     <?php require_once __DIR__ .  '/../../components/table.php'; ?>
-    <?php require_once __DIR__ .  '/create.php'?>
+    <?php require_once __DIR__ .  '/popup.php'?>
     
 </div>
