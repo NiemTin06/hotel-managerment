@@ -1,4 +1,7 @@
 import {checkboxMulti} from '../common/checkbox.js';
+import { initDeleteRoomType } from './delete-room-type.js';
+import { initDetailRoomType } from './detail-room-type.js';
+import { handleFormRoomType } from './handle-form-room-type.js';
 
 // import { initPopUp } from '../common/popup.js';
 
@@ -60,4 +63,7 @@ export function renderRoomType(roomstype, container) {
         checkBoxMulti.checked = false;
     }
     checkboxMulti();
+    handleFormRoomType();
+    initDetailRoomType(); 
+    initDeleteRoomType();
 }

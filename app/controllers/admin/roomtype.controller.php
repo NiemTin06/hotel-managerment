@@ -142,5 +142,24 @@ class RoomTypeController extends Controller
             exit();
         }
     }
-    
+    public function delete($id)
+    {
+        try {
+            $model = $this->model("roomstype");
+            $result = $model->deleteRoomType($id);
+            echo json_encode([
+                "success" => $result,
+                "message" => $result
+                    ? "Xóa loại phòng thành công."
+                    : "Xóa loại phòng thất bại."
+            ]);
+            exit();
+        } catch (\Throwable $e) {
+            echo json_encode([
+                "success" => false,
+                "message" => $e->getMessage()
+            ]);
+            exit();
+        }
+    }
 }

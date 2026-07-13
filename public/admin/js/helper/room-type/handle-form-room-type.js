@@ -1,6 +1,7 @@
 import { bindUpdateButton } from "./update-room-type.js";
 import { loadItem } from "../common/load-item.js";
 import { initDetailRoomType } from "./detail-room-type.js";
+import { API } from "../../api/api.js";
 
 export function handleFormRoomType () {
     // pop up create item 
@@ -96,8 +97,8 @@ export function handleFormRoomType () {
             const formData = new FormData(form);
             const id = form.dataset.id;    
             const data = id
-                ? await submitUpdateRoomType(id, formData)
-                : await submitCreateRoomType(formData);
+                  ? await API.post(`admin/rooms-type/update/${id}`, formData)
+                 : await API.post(`admin/rooms-type/create`, formData);
             if (!data.success) {
                 alert(data.message);
                 return;
@@ -109,8 +110,7 @@ export function handleFormRoomType () {
             previewBox.classList.remove("show");
             popupContainer.classList.remove("show");
             await loadItem("admin/rooms-type", "room-type-list");
-            handleFormRoomType();
-            initDetailRoomType();
+
 
         });
     }

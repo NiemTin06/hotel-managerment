@@ -1,4 +1,5 @@
 import {checkboxMulti} from '../common/checkbox.js';
+import { initDeleteRoomType } from '../room-type/delete-room-type.js';
 
 export function renderRooms(rooms) {
     const roomListContainer = document.querySelector("#room-list");
@@ -48,4 +49,5 @@ export function renderRooms(rooms) {
     }
 
     checkboxMulti();
+
 }

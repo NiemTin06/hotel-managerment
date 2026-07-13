@@ -140,4 +140,14 @@ class RoomsTypeModel extends Database {
         }
         return $stmt->execute(); 
     }
+    public function deleteRoomType($id)
+    {
+        $sql = "
+            DELETE FROM RoomType
+            WHERE ROOMTYPE_ID = :id
+        ";
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }
