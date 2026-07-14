@@ -19,6 +19,7 @@
     $status = [
         ["label" => "Hoạt động", "value" => "Active"],
         ["label" => "Không hoạt động", "value" => "Inactive"],
+        ["label" => "Xóa loại phòng", "value" => "Delete"]
     ];
     $sortOptions = [
         "" => "Mặc định",
@@ -31,7 +32,7 @@
     $statusOptions = [
         "" => "Tất cả",
         "Active" => "Đang hoạt động",
-        "Inactive" => "Ngừng hoạt động "
+        "Inactive" => "Ngừng hoạt động"
     ];
 
     $maxGuests = [
@@ -97,6 +98,9 @@
     <?php require_once __DIR__ .  '/../../components/filter.php';  ?>
     <?php require_once __DIR__ .  '/../../components/toolbar.php'; ?>
     <?php require_once __DIR__ .  '/../../components/table.php'; ?>
+    <div id="pagination" class="pagination">
+        
+    </div>
     <?php require_once __DIR__ .  '/popup.php'?>
     <?php require_once __DIR__ .  '/detail.php'?>
 

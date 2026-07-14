@@ -19,7 +19,14 @@ export function changeMulti(label, link, container) {
                 const ids = Array.from(inputChecked).map(input => input.value);
                 let action = formChangeMulti.getAttribute("action");
                 try {
-                    const data = await API.patch(`${link}/change-multi`, { ids: ids.join(","), status: statusChange });
+                    let data;
+                    if (statusChange == "Delete"){
+                        const confirmDelete = confirm("Bạn có chắc muốn xóa các loại loại phòng này?");
+                        if (!confirmDelete) return;
+                        data = await API.delete(`${link}/delete`, { ids: ids});
+                    } else {
+                        data = await API.patch(`${link}/change-multi`, { ids: ids.join(","), status: statusChange });
+                    }
                     if(data.success){
                         console.log("Cập nhật trạng thái thành công");
                         loadItem(link, container);

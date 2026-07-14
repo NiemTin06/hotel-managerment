@@ -40,11 +40,58 @@ class RoomsTypeModel extends Database {
         if (!empty($filters['sort-by']) && isset($sortMap[$filters['sort-by']])) {
             $sql .= " ORDER BY " . $sortMap[$filters['sort-by']];
         }
+        // Phân trang
+        // $sql .= " LIMIT ? OFFSET ?";
+
+        // $offset = (int)($filters['offset'] ?? 0);
+        // $limit = (int)($filters['limit'] ?? 10);
         $stmt = $this->connect()->prepare($sql);
-        $stmt->execute($params);
+
+         // Bind từng param WHERE như bình thường
+        foreach ($params as $i => $value) {
+            $stmt->bindValue($i + 1, $value);
+        }
+
+        // Bind riêng LIMIT/OFFSET là kiểu INT
+        // $paramIndex = count($params) + 1;
+        // $stmt->bindValue($paramIndex, $limit, PDO::PARAM_INT);
+        // $stmt->bindValue($paramIndex + 1, $offset, PDO::PARAM_INT);
+
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+    public function count(array $filters = []){
+        $sql = "SELECT COUNT(*) FROM RoomType WHERE 1 = 1";
+        $params = [];
+
+        // Lọc theo trạng thái
+        if (!empty($filters['status'])) {
+            $sql .= " AND ROOMTYPE_STATUS = ?";
+            $params[] = $filters['status'];
+        }
+
+        // Lọc theo loại giường
+        if (!empty($filters['roomtype-bed-type'])) {
+            $sql .= " AND ROOMTYPE_BED_TYPE = ?";
+            $params[] = $filters['roomtype-bed-type'];
+        }
+
+        // Lọc theo sức chứa
+        if (!empty($filters['roomtype-max-guests'])) {
+            $sql .= " AND ROOMTYPE_MAX_GUESTS = ?";
+            $params[] = $filters['roomtype-max-guests'];
+        }
+
+        // Tìm kiếm
+        if (!empty($filters['search'])) {
+            $sql .= " AND ROOMTYPE_NAME COLLATE utf8mb4_unicode_ci LIKE ?";
+            $params[] = '%' . $filters['search'] . '%';
+        }
+
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn(); 
+    }
     public function updateRoomTypeStatus(array $ids, string $newStatus){
         if (empty($ids) || empty($newStatus)) {
             return false;
@@ -107,7 +154,6 @@ class RoomsTypeModel extends Database {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
     public function updateRoomType($id, $data){
         $slug = toSlug($data['typeName']); 
         $sql = "UPDATE RoomType
@@ -140,14 +186,20 @@ class RoomsTypeModel extends Database {
         }
         return $stmt->execute(); 
     }
-    public function deleteRoomType($id)
-    {
+    public function deleteRoomType(array $ids)
+    {   
+        if (empty($ids)) {
+            return false;
+        }
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $sql = "
             DELETE FROM RoomType
-            WHERE ROOMTYPE_ID = :id
+            WHERE ROOMTYPE_ID IN ($placeholders)
         ";
         $stmt = $this->connect()->prepare($sql);
-        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        foreach ($ids as $index => $id) {
+            $stmt->bindValue($index + 1, $id, PDO::PARAM_INT);
+        }
         return $stmt->execute();
     }
 }

@@ -8,7 +8,7 @@ export function initDeleteRoomType() {
             const id = button.dataset.id;
             const confirmDelete = confirm("Bạn có chắc muốn xóa loại loại phòng này?");
             if (!confirmDelete) return;
-            const data = await API.delete(`admin/rooms-type/delete/${id}`); 
+            const data = await API.delete(`admin/rooms-type/delete`, { ids: [id]}); 
             await loadItem(
                 "admin/rooms-type",
                 "room-type-list"

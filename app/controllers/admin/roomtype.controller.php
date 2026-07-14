@@ -2,8 +2,7 @@
 require_once 'app/helpers/upload.helper.php';
 class RoomTypeController extends Controller
 {
-    public function index()
-    {
+    public function index(){
         $data = [
             'title' => 'Danh sách loại phòng khách sạn',
             'description' => 'Hệ thống quản lý đặt phòng khách sạn thông minh.',
@@ -14,23 +13,40 @@ class RoomTypeController extends Controller
         $this->view('admin/layout/main_layout', $data);
         exit();
     }
-    public function getRoomTypeData()
-    {
+    public function getRoomTypeData(){
+        // $page = max(1, (int)($_GET['page'] ?? 1));
+        // $limit = 5;
+        // $offset = ($page - 1) * $limit;
         $filter = [
             'search' => trim($_GET['search'] ?? ''),
             'sort-by' => trim($_GET['sort-by'] ?? ''),
             'status' => trim($_GET['status'] ?? ''),
             'roomtype-bed-type' => trim($_GET['roomtype-bed-type'] ?? ''),
             'roomtype-max-guests' => (int)($_GET['roomtype-max-guests'] ?? 0),
+            // 'page' => $page,
+            // 'limit' => $limit,
+            // 'offset' => $offset
         ];
         $roomsTypeModel = $this->model('roomstype');
         $roomsType = $roomsTypeModel->getAllRoomsType($filter);
+        
+        // $totalItem = $roomsTypeModel->count($filter);
+        // $totalPage = ceil($totalItem / $limit);
+
         header('Content-Type: application/json; charset=utf-8');
-        echo json_encode($roomsType);
+        echo json_encode([
+            "record" => $roomsType
+            // ,
+            // "pagination" => [
+            //     "page" => $page,
+            //     "limit" => $limit,
+            //     "totalItem" => $totalItem,
+            //     "totalPage" => $totalPage
+            // ]
+        ]);
         exit();
     }
-    public function changeMulti()
-    {
+    public function changeMulti(){
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $ids = $input['ids'] ?? '';
         $status = $input['status'] ?? '';
@@ -49,8 +65,8 @@ class RoomTypeController extends Controller
         }
         exit();
     }
-    public function create()
-    {
+     
+    public function create(){
         try {
 
             $roomType = [
@@ -97,8 +113,7 @@ class RoomTypeController extends Controller
             exit();
         }
     }
-    public function getRoomTypeOne($id)
-    {   
+    public function getRoomTypeOne($id){   
         // $id  = trim($_GET['id'] ?? '');
         $model = $this->model('roomstype');
         $roomType = $model->getRoomTypeById($id);
@@ -106,8 +121,7 @@ class RoomTypeController extends Controller
         echo json_encode($roomType);
         exit();
     }
-    public function update($id)
-    {
+    public function update($id){
         try {
 
             $roomType = [
@@ -142,11 +156,12 @@ class RoomTypeController extends Controller
             exit();
         }
     }
-    public function delete($id)
-    {
+    public function delete(){
+         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         try {
             $model = $this->model("roomstype");
-            $result = $model->deleteRoomType($id);
+            $ids = $input['ids'] ?? [];
+            $result = $model->deleteRoomType($ids);
             echo json_encode([
                 "success" => $result,
                 "message" => $result

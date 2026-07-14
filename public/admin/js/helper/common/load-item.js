@@ -2,12 +2,10 @@ import { API } from '../../api/api.js';
 import {renderRoomType} from '../room-type/render-room-type.js';
 
 export async function loadItem (link, container){
-    try {
-        
-        const records = await API.get(`${link}/data`);
+    try {   
+        const tmp= await API.get(`${link}/data`);
+        const records = tmp["record"];
         renderRoomType(records, container)
-        // console.log("ok")
-        console.log(records)
     } catch (error) {
         console.error('Lỗi khi load dữ liệu phòng:', error);
         const roomListContainer = document.querySelector("." + container);

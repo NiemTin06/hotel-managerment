@@ -19,9 +19,10 @@ export class API {
         });
     }
 
-    static delete(url) {
+    static delete(url, data) {
         return this.request(url, {
-            method: "DELETE"
+            method: "DELETE",
+            body: data
         });
     }
 

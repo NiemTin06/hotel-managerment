@@ -1,5 +1,6 @@
 <?php
 /** @var array $data */
+/** @var array $status */
 ?>
 
 <div class="card mb-3">
@@ -20,11 +21,7 @@
                                 Cập nhật trạng thái
                             </label>
                             <select id="bulk-status" class="form-select" name ="status">
-                                <!-- <option value="">Giữ nguyên</option>
-                                <option value="Available">Còn trống</option>
-                                <option value="Booked">Đã đặt</option>
-                                <option value="Occupied">Đang sử dụng</option>
-                                <option value="Maintenance">Bảo trì</option> -->
+                                <option value="" disabled selected> Chọn trạng thái</option>
                                 <?php foreach ($status as $item): ?>
                                     <option value="<?= $item["value"] ?>">
                                         <?= $item["label"] ?>
