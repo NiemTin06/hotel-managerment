@@ -98,9 +98,7 @@
     <?php require_once __DIR__ .  '/../../components/filter.php';  ?>
     <?php require_once __DIR__ .  '/../../components/toolbar.php'; ?>
     <?php require_once __DIR__ .  '/../../components/table.php'; ?>
-    <div id="pagination" class="pagination">
-        
-    </div>
+    <?php require_once __DIR__ .  '/../../components/pagination.php' ?>
     <?php require_once __DIR__ .  '/popup.php'?>
     <?php require_once __DIR__ .  '/detail.php'?>
 

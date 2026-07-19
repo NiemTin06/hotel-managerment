@@ -1,11 +1,12 @@
-import { bindUpdateButton } from "./update-room-type.js";
+import { bindUpdateButton } from "./update-room.js";
 import { loadItem } from "../common/load-item.js";
-import { initDetailRoomType } from "./detail-room-type.js";
+import { initDetailRoom } from "./detail-room.js";
 import { API } from "../../api/api.js";
-import { renderRoomType } from "./render-room-type.js";
+import { renderRoom } from "./render-room.js";
 import { getQueryString } from "../common/url.js";
 
-export function handleFormRoomType () {
+
+export function handleFormRoom ( label ) {
     // pop up create item 
     const form = document.querySelector("[popup-form]");
     if (!form) return;
@@ -14,31 +15,7 @@ export function handleFormRoomType () {
     const popupContainer = document.querySelector(".popup-container")
     const btnCreatePopup = document.querySelector("#btnCreatePopup");
     const btnClosePopup = document.querySelector("#btnClosePopup")
-    const btnUpdatePopup = document.querySelectorAll("[update-room-type]");
-    
-    const previewInput = document.querySelector('#roomtype-thumbnail')
-    const previewImg = document.querySelector("#preview-image");
-    const previewBox = document.querySelector(".thumbnail-preview"); 
-    const removeBtn = document.getElementById("btn-remove-image");
-    
-    // Preview image 
-    previewInput.addEventListener("change", () => {
-        const file = previewInput.files[0];
-        if (!file) {
-            previewImg.src = "";
-            previewBox.classList.remove("show"); // không chọn file -> ẩn lại
-            return;
-        }
-        previewImg.src = URL.createObjectURL(file);
-        previewBox.classList.add("show");
-    })
-
-    // Remove image
-    removeBtn.addEventListener("click", () => {
-        previewInput.value = "";
-        previewImg.src = "";
-        previewBox.classList.remove("show");
-    });
+    const btnUpdatePopup = document.querySelectorAll("[update-room]");
     
     // Close popup
     if (btnClosePopup && popup){
@@ -56,19 +33,16 @@ export function handleFormRoomType () {
     if (btnCreatePopup){
         btnCreatePopup.addEventListener("click", () => {
             form.reset();
-            delete form.dataset.id;      
-            previewImg.src = "/images/no-image.png";
-            previewBox.classList.remove("show");
+            delete form.dataset.id;     
             popupContainer.classList.add("show");
             const button = document.querySelector(".btn-submit")
             const title = document.querySelector(".popup-title")
-            
             if (title) {
-                title.textContent = "Tạo loại phòng mới";
+                title.textContent = `Tạo ${label} mới`;
             }
 
             if (button) {
-                button.textContent = "Thêm loại phòng";
+                button.textContent = `Thêm ${label}`;
             }
         });
     }
@@ -82,11 +56,13 @@ export function handleFormRoomType () {
                 popupContainer.classList.add("show");
                 const button = document.querySelector(".btn-submit")
                 const title = document.querySelector(".popup-title")
-                console.log("ok")
-                console.log(button);
-                console.log(title);
-                title.innerHTML = "Cập nhật loại phòng"
-                button.innerHTML = "Cập nhật"
+                    if (title) {
+                        title.textContent = `Cập nhật ${label}`;
+                    }
+
+                    if (button) {
+                        button.textContent = `Cập nhật`;
+                    }
             }) 
         })
     }
@@ -98,23 +74,20 @@ export function handleFormRoomType () {
             e.preventDefault();
             const formData = new FormData(form);
             const id = form.dataset.id;    
+            console.log(id);
             const data = id
-                  ? await API.post(`admin/rooms-type/update/${id}`, formData)
-                 : await API.post(`admin/rooms-type/create`, formData);
+                  ? await API.post(`admin/rooms/update/${id}`, formData)
+                 : await API.post(`admin/rooms/create`, formData);
             if (!data.success) {
                 alert(data.message);
                 return;
-            } 
+            }
             alert(data.message);
             form.reset();
             delete form.dataset.id;
-            previewImg.src = "/images/no-image.png";
-            previewBox.classList.remove("show");
             popupContainer.classList.remove("show");
             const param = getQueryString();
-            await loadItem("admin/rooms-type", "room-type-list" , renderRoomType, param);
-
-
+            await loadItem("admin/rooms", "room-list", renderRoom, param);
         });
     }
 }

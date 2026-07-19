@@ -1,10 +1,13 @@
-import { loadRooms } from "./load-room.js";
-import { initFilterRoom } from "./filter-room.js";
-import { changeMulti } from "./change-multi.js";
+import { changeMulti } from "../common/change-multi.js";
+import { initFilter } from "../common/filter.js";
+import { loadItem } from "../common/load-item.js";
+import { initPagination } from "../common/pagination.js";
+import { renderRoom } from "./render-room.js";
+
 
 export async function initRoom() {
-    await loadRooms();
-
-    initFilterRoom();
-    changeMulti();
+    await loadItem("admin/rooms", "room-list", renderRoom);
+    initFilter("admin/rooms","room-list", renderRoom);
+    initPagination("admin/rooms","room-list", renderRoom);
+    changeMulti("Loại phòng","admin/rooms", "room-list", renderRoom);
 }

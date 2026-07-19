@@ -14,35 +14,35 @@ class RoomTypeController extends Controller
         exit();
     }
     public function getRoomTypeData(){
-        // $page = max(1, (int)($_GET['page'] ?? 1));
-        // $limit = 5;
-        // $offset = ($page - 1) * $limit;
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $limit = 5;
+        $offset = ($page - 1) * $limit;
         $filter = [
             'search' => trim($_GET['search'] ?? ''),
             'sort-by' => trim($_GET['sort-by'] ?? ''),
             'status' => trim($_GET['status'] ?? ''),
             'roomtype-bed-type' => trim($_GET['roomtype-bed-type'] ?? ''),
             'roomtype-max-guests' => (int)($_GET['roomtype-max-guests'] ?? 0),
-            // 'page' => $page,
-            // 'limit' => $limit,
-            // 'offset' => $offset
+            'page' => $page,
+            'limit' => $limit,
+            'offset' => $offset
         ];
         $roomsTypeModel = $this->model('roomstype');
         $roomsType = $roomsTypeModel->getAllRoomsType($filter);
         
-        // $totalItem = $roomsTypeModel->count($filter);
-        // $totalPage = ceil($totalItem / $limit);
+        $totalItem = $roomsTypeModel->count($filter);
+        $totalPage = ceil($totalItem / $limit);
 
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode([
             "record" => $roomsType
-            // ,
-            // "pagination" => [
-            //     "page" => $page,
-            //     "limit" => $limit,
-            //     "totalItem" => $totalItem,
-            //     "totalPage" => $totalPage
-            // ]
+            ,
+            "pagination" => [
+                "page" => $page,
+                "limit" => $limit,
+                "totalItem" => $totalItem,
+                "totalPage" => $totalPage
+            ]
         ]);
         exit();
     }

@@ -33,18 +33,18 @@ class RoomsTypeModel extends Database {
         $sortMap = [
             'price_asc'        => 'ROOMTYPE_PRICE_PER_NIGHT ASC',
             'price_desc'       => 'ROOMTYPE_PRICE_PER_NIGHT DESC',
-            'room_number_asc'  => 'ROOMTYPE_NAME ASC',
-            'room_number_desc' => 'ROOMTYPE_NAME DESC',
+            'name_asc'  => 'ROOMTYPE_NAME ASC',
+            'name_desc' => 'ROOMTYPE_NAME DESC',
         ];
 
         if (!empty($filters['sort-by']) && isset($sortMap[$filters['sort-by']])) {
             $sql .= " ORDER BY " . $sortMap[$filters['sort-by']];
         }
         // Phân trang
-        // $sql .= " LIMIT ? OFFSET ?";
+        $sql .= " LIMIT ? OFFSET ?";
 
-        // $offset = (int)($filters['offset'] ?? 0);
-        // $limit = (int)($filters['limit'] ?? 10);
+        $offset = (int)($filters['offset'] ?? 0);
+        $limit = (int)($filters['limit'] ?? 10);
         $stmt = $this->connect()->prepare($sql);
 
          // Bind từng param WHERE như bình thường
@@ -53,9 +53,9 @@ class RoomsTypeModel extends Database {
         }
 
         // Bind riêng LIMIT/OFFSET là kiểu INT
-        // $paramIndex = count($params) + 1;
-        // $stmt->bindValue($paramIndex, $limit, PDO::PARAM_INT);
-        // $stmt->bindValue($paramIndex + 1, $offset, PDO::PARAM_INT);
+        $paramIndex = count($params) + 1;
+        $stmt->bindValue($paramIndex, $limit, PDO::PARAM_INT);
+        $stmt->bindValue($paramIndex + 1, $offset, PDO::PARAM_INT);
 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

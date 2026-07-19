@@ -48,18 +48,19 @@ export class API {
         // Browser sẽ tự thêm multipart/form-data
 
         try {
-
             const response = await fetch(
                 `${APP_URLROOT}/${url}`,
                 options
             );
-
+           
             if (!response.ok) {
                 throw new Error(`HTTP Error: ${response.status}`);
             }
 
             return await response.json();
-
+            // const text = await response.text();
+            // console.log(text);
+            // return JSON.parse(text);
         } catch (error) {
 
             console.log("API Error:", error);

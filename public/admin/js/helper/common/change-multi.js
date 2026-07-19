@@ -1,6 +1,6 @@
 import { API } from '../../api/api.js';
 import { loadItem } from './load-item.js';
-export function changeMulti(label, link, container) {
+export function changeMulti(label, link, container, callbackRender) {
     const formChangeMulti = document.querySelector("[form-change-multi]");
     formChangeMulti.addEventListener("submit", async (e)=>{
         e.preventDefault();
@@ -21,7 +21,7 @@ export function changeMulti(label, link, container) {
                 try {
                     let data;
                     if (statusChange == "Delete"){
-                        const confirmDelete = confirm("Bạn có chắc muốn xóa các loại loại phòng này?");
+                        const confirmDelete = confirm("Bạn có chắc muốn xóa");
                         if (!confirmDelete) return;
                         data = await API.delete(`${link}/delete`, { ids: ids});
                     } else {
@@ -29,7 +29,7 @@ export function changeMulti(label, link, container) {
                     }
                     if(data.success){
                         console.log("Cập nhật trạng thái thành công");
-                        loadItem(link, container);
+                        loadItem(link, container, callbackRender);
                     }
                     else {
                         console.log(data.message ?? "Cập nhật trạng thái thất bại.");
