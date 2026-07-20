@@ -8,7 +8,7 @@ class HomeController extends Controller {
         ];
 
         // Nạp file giao diện trang chủ: app/views/admin/pages/home/index.php
-        $this->view('admin/pages/home/index', $data);
+        $this->view('admin/pages/customer/index.php', $data);
 
     }
 }
