@@ -1,5 +1,7 @@
 import { API } from "../../api/api.js";
 import { loadItem } from "../common/load-item.js";
+import { renderRoomType } from "./render-room-type.js";
+import { getQueryString } from "../common/url.js";
 
 export function initDeleteRoomType() {
     const buttons = document.querySelectorAll("[delete-room-type]");
@@ -11,7 +13,9 @@ export function initDeleteRoomType() {
             const data = await API.delete(`admin/rooms-type/delete`, { ids: [id]}); 
             await loadItem(
                 "admin/rooms-type",
-                "room-type-list"
+                "room-type-list",
+                renderRoomType,
+                getQueryString()
             );
         })
     });
