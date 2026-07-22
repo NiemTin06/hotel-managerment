@@ -36,7 +36,6 @@
     <?php if (!empty($data['page_script'])): ?>
         <script type="module" src="<?= URLROOT ?>/public/admin/js/pages/<?= $data['page_script'] ?>.js"></script>
         <?php endif; ?>
-    <script type="module" src="<?= URLROOT ?>/public/admin/js/pages/default.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

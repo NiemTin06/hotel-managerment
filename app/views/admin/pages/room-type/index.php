@@ -21,6 +21,7 @@
         ["label" => "Không hoạt động", "value" => "Inactive"],
         ["label" => "Xóa loại phòng", "value" => "Delete"]
     ];
+    $btnCreateName = "Thêm loại phòng mới";
     $sortOptions = [
         "" => "Mặc định",
         "price_asc" => "Giá tăng dần",

@@ -1,10 +1,9 @@
 <?php
 
+// Router cho Quản lý Khách hàng
 $app->get('/admin/customers', 'CustomerController@index');
-// $app->get('/admin/rooms-type/data', 'RoomTypeController@getRoomTypeData');
-// $app->post('/admin/rooms-type/create', 'RoomTypeController@create');
-// $app->patch('/admin/rooms-type/change-multi', 'RoomTypeController@changeMulti');
-// $app->patch('/admin/rooms-type/delete-multi', 'RoomTypeController@deleteMulti');
-// $app->get('/admin/rooms-type/{id}', 'RoomTypeController@getRoomTypeOne');
-// $app->post('/admin/rooms-type/update/{id}', 'RoomTypeController@update');
-// $app->delete("/admin/rooms-type/delete","RoomTypeController@delete");
+$app->get('/admin/customers/data', 'CustomerController@getCustomerData');
+$app->post('/admin/customers/create', 'CustomerController@create');
+$app->get('/admin/customers/{id}', 'CustomerController@getOne');
+$app->post('/admin/customers/update/{id}', 'CustomerController@update');
+$app->delete('/admin/customers/delete', 'CustomerController@delete');

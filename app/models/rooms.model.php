@@ -36,8 +36,8 @@ class RoomsModel extends Database {
 
         // Sắp xếp
         $sortMap = [
-            "name_asc"  => "RoomType.ROOMTYPE_NAME ASC",
-            "name_desc" => "RoomType.ROOMTYPE_NAME DESC",
+            "name_asc"  => "Room.ROOM_NUMBER ASC",
+            "name_desc" => "Room.ROOM_NUMBER DESC",
         ];
 
         if (!empty($filters['sort-by']) && isset($sortMap[$filters['sort-by']])) {
@@ -153,7 +153,7 @@ class RoomsModel extends Database {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-public function getRoomByNumber(int $number){
+public function getRoomByNumber(string $number){
         $sql = "SELECT * FROM Room  INNER JOIN RoomType
                 ON Room.ROOM_ROOMTYPE_ID = RoomType.ROOMTYPE_ID
                 WHERE ROOM_NUMBER = ?";

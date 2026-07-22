@@ -32,7 +32,7 @@
         ],
         ["label" => "Xóa phòng", "value" => "Delete"]
     ];
-
+    $btnCreateName = "Thêm phòng mới";
     $sortOptions = [
         "" => "Mặc định",
         "name_asc" => "số phòng A-Z",

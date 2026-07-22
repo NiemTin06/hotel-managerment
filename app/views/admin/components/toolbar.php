@@ -44,7 +44,7 @@
                         class="btn btn-primary ms-3" 
                         id ="btnCreatePopup" 
                     >
-                        Thêm phòng mới</a>
+                        <?= $btnCreateName ?? 'Thêm mới' ?></button>
                 </div>
             </div>
         </div>

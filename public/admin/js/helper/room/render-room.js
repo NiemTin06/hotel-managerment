@@ -46,21 +46,20 @@ export function renderRoom(rooms, container, roomstype) {
 
     const roomTypeOptionCreate = document.querySelector(".popup-container .form-select")
     const roomTypeFilter = document.querySelector("#room-type");
-    console.log(roomTypeFilter)
     const options = (Array.isArray(roomstype) ? roomstype : []).map((roomtype, index) => {
                 return `
-                <option value=${roomtype.ROOMTYPE_ID}> ${index}. ${roomtype.ROOMTYPE_NAME} - SL${roomtype.ROOMTYPE_MAX_GUESTS} - Loại giường: ${roomtype.ROOMTYPE_BED_TYPE}</option>
+                <option value=${roomtype.ROOMTYPE_ID}> ${index + 1}. ${roomtype.ROOMTYPE_NAME} - SL${roomtype.ROOMTYPE_MAX_GUESTS} - Loại giường: ${roomtype.ROOMTYPE_BED_TYPE}</option>
             `;
     }).join("");
 
     const optionFilter = (Array.isArray(roomstype) ? roomstype : []).map((roomtype, index) => {
                 return `
-                <option value=${roomtype.ROOMTYPE_ID}> ${roomtype.ROOMTYPE_NAME} </option>
+                <option value=" ${roomtype.ROOMTYPE_ID}"> ${roomtype.ROOMTYPE_NAME} </option>
             `;
     }).join("");
 
     roomTypeOptionCreate.innerHTML = options;
-    roomTypeFilter.innerHTML += `<option value="" selected> Mặc định</option>`
+    roomTypeFilter.innerHTML = `<option value="" selected> Mặc định</option>`
     roomTypeFilter.innerHTML += optionFilter;
 
     // Reset lại nút check-all tổng về false sau khi re-render danh sách mới
