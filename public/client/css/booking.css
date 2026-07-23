@@ -1,0 +1,265 @@
+.booking-page {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.page-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #cccccc;
+}
+
+.page-title h1 {
+    margin: 0;
+    color: #0d6efd;
+    font-size: 28px;
+    font-weight: 400;
+}
+
+.page-title p {
+    margin: 5px 0 0;
+    color: #666666;
+}
+
+.booking-box {
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+}
+
+.booking-box h2 {
+    margin: 0 0 15px;
+    font-size: 21px;
+}
+
+.booking-inline-field {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 11px;
+}
+
+.booking-inline-field label {
+    margin: 0;
+    font-weight: bold;
+}
+
+.booking-inline-field .form-control {
+    width: 100%;
+    max-width: 720px;
+}
+
+.required-mark {
+    color: #dc3545;
+}
+
+.booking-stay-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    gap: 30px;
+    margin-top: 4px;
+}
+
+.booking-stay-row > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 38px;
+}
+
+
+.booking-note-field {
+    margin-bottom: 10px;
+}
+
+.booking-note-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.booking-note-field textarea {
+    min-height: 78px;
+    resize: vertical;
+}
+
+.guest-note {
+    margin: 0 0 12px;
+    color: #666666;
+    font-size: 13px;
+}
+
+.total-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 15px;
+    background: #f2f2f2;
+    border: 1px solid #dddddd;
+}
+
+.total-box span,
+.total-box strong {
+    display: block;
+}
+
+.total-box strong {
+    color: #dc3545;
+    font-size: 23px;
+}
+
+.empty-text {
+    padding: 18px;
+    text-align: center;
+    color: #666666;
+    background: #f7f7f7;
+}
+
+.selected-room-card {
+    display: grid;
+    grid-template-columns: 1fr 190px;
+    gap: 18px;
+    padding: 14px;
+    background: #f8f8f8;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+}
+
+.selected-room-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.selected-room-heading h3 {
+    margin: 0;
+    font-size: 21px;
+}
+
+.selected-room-heading p {
+    margin: 4px 0 0;
+    color: #666666;
+}
+
+.selected-room-detail {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.selected-room-detail > div {
+    padding: 8px 9px;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+}
+
+.selected-room-detail span,
+.selected-room-detail strong {
+    display: block;
+}
+
+.selected-room-detail span {
+    margin-bottom: 2px;
+    color: #666666;
+    font-size: 12px;
+}
+
+.selected-room-price-box {
+    align-self: center;
+    padding-left: 18px;
+    text-align: right;
+    border-left: 1px solid #dddddd;
+}
+
+.selected-room-old-price {
+    display: block;
+    color: #777777;
+    font-size: 13px;
+    text-decoration: line-through;
+}
+
+.selected-room-price-box strong {
+    display: inline-block;
+    color: #dc3545;
+    font-size: 21px;
+}
+
+.selected-room-price-box small {
+    color: #666666;
+}
+
+.booking-availability-text {
+    min-width: 115px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.available-booking-room {
+    color: #198754;
+}
+
+.unavailable-booking-room {
+    color: #dc3545;
+}
+
+@media (max-width: 850px) {
+    .selected-room-card {
+        grid-template-columns: 1fr;
+    }
+
+    .selected-room-price-box {
+        padding-top: 12px;
+        padding-left: 0;
+        text-align: left;
+        border-top: 1px solid #dddddd;
+        border-left: 0;
+    }
+}
+
+@media (max-width: 700px) {
+    .page-title,
+    .total-box,
+    .selected-room-heading {
+        display: block;
+    }
+
+    .booking-inline-field {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .booking-inline-field .form-control {
+        max-width: none;
+    }
+
+    .booking-stay-row,
+    .selected-room-detail {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-stay-row > div {
+        justify-content: space-between;
+    }
+
+    .page-title .btn,
+    .total-box .btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .booking-availability-text {
+        display: block;
+        margin-top: 8px;
+        text-align: left;
+    }
+}
