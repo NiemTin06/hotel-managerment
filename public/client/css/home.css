@@ -7,17 +7,16 @@
 .home-hero {
     display: flex;
     align-items: center;
-    min-height: 390px;
+    min-height: 420px;
     padding: 55px;
     margin-bottom: 28px;
     color: #ffffff;
-    background:
-        linear-gradient(
-            110deg,
-            rgba(25, 29, 33, 0.94),
-            rgba(52, 58, 64, 0.72)
-        ),
-        #343a40;
+
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.25)), url("../img/hoboibuoitoi.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     border-radius: 8px;
 }
 
