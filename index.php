@@ -16,6 +16,7 @@ $app = new App();
 
 // 4. Nạp bản đồ đường dẫn ảo
 require_once 'app/routes/admin/index.route.php';
+require_once 'app/routes/client/index.route.php';
 
 // 5. Kích hoạt hệ thống quét URL
 $app->run();
