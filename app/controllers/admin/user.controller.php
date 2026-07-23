@@ -1,180 +1,144 @@
 <?php
-require_once 'app/helpers/upload.helper.php';
-class UserController extends Controller
-{
-    public function index(){
+class UserController extends Controller {
+    
+    // 1. Load giao diện trang quản lý
+    public function index() {
         $data = [
-            'title' => 'Danh sách người dùng khách sạn',
-            'description' => 'Hệ thống quản lý đặt phòng khách sạn thông minh.',
+            'title' => 'Quản lý Tài khoản Nhân viên',
             'view_content' => 'pages/user/index',
             'page_script' => 'user',
             'link' => 'users'
         ];
         $this->view('admin/layout/main_layout', $data);
+    }
+
+    // 2. API Lấy danh sách (Có tìm kiếm & phân trang)
+public function getUserData() {
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+        
+        $filter = [
+            'search'  => trim($_GET['search'] ?? ''),
+            'status'  => trim($_GET['status'] ?? ''),
+            'sort_by' => trim($_GET['sort-by'] ?? ''),
+            'page'    => $page, 
+            'limit'   => $limit, 
+            'offset'  => $offset
+        ];
+
+        $model = $this->model('users');
+        $users = $model->getAllUsers($filter);
+        $totalItem = $model->count($filter);
+        $totalPage = ceil($totalItem / $limit);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            "record" => $users,
+            "pagination" => ["page" => $page, "limit" => $limit, "totalItem" => $totalItem, "totalPage" => $totalPage]
+        ]);
         exit();
     }
-//     public function getRoomTypeData(){
-//         $page = max(1, (int)($_GET['page'] ?? 1));
-//         $limit = 5;
-//         $offset = ($page - 1) * $limit;
-//         $filter = [
-//             'search' => trim($_GET['search'] ?? ''),
-//             'sort-by' => trim($_GET['sort-by'] ?? ''),
-//             'status' => trim($_GET['status'] ?? ''),
-//             'roomtype-bed-type' => trim($_GET['roomtype-bed-type'] ?? ''),
-//             'roomtype-max-guests' => (int)($_GET['roomtype-max-guests'] ?? 0),
-//             'page' => $page,
-//             'limit' => $limit,
-//             'offset' => $offset
-//         ];
-//         $roomsTypeModel = $this->model('roomstype');
-//         $roomsType = $roomsTypeModel->getAllRoomsType($filter);
+
+    // 3. API Thêm tài khoản mới
+    public function create() {
+        $data = [
+            'username' => trim($_POST['username'] ?? ''),
+            'email'    => trim($_POST['email'] ?? ''),
+            'password' => trim($_POST['password'] ?? ''),
+            'phone'    => trim($_POST['phone'] ?? ''),
+            'role'     => trim($_POST['role'] ?? 'Staff'),
+            'status'   => trim($_POST['status'] ?? 'Active')
+        ];
+
+        if (empty($data['username']) || empty($data['email'])) {
+            echo json_encode(["success" => false, "message" => "Vui lòng nhập đầy đủ Tài khoản và Email!"]);
+            exit();
+        }
+
+        $model = $this->model("users"); // Đã fix thành 'users'
+        $result = $model->addUser($data);
+        echo json_encode([
+            "success" => (bool)$result,
+            "message" => $result ? "Tạo tài khoản thành công! (Mật khẩu mặc định: 123456 nếu để trống)" : "Tên tài khoản hoặc Email đã tồn tại!"
+        ]);
+        exit();
+    }
+
+    public function getOne($id) {
+        $model = $this->model('users');
+        $user = $model->getUser(trim($id)); 
         
-//         $totalItem = $roomsTypeModel->count($filter);
-//         $totalPage = ceil($totalItem / $limit);
+        if ($user) {
+            unset($user['USER_PASSWORD']); 
+        }
 
-//         header('Content-Type: application/json; charset=utf-8');
-//         echo json_encode([
-//             "record" => $roomsType
-//             ,
-//             "pagination" => [
-//                 "page" => $page,
-//                 "limit" => $limit,
-//                 "totalItem" => $totalItem,
-//                 "totalPage" => $totalPage
-//             ]
-//         ]);
-//         exit();
-//     }
-//     public function changeMulti(){
-//         $input = json_decode(file_get_contents('php://input'), true) ?? [];
-//         $ids = $input['ids'] ?? '';
-//         $status = $input['status'] ?? '';
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($user);
+        exit();
+    }
 
-//         if (!empty($ids) && !empty($status)) {
-//             $idsArray = explode(',', $ids);
-//             $roomsModel = $this->model('roomstype');
-//             $result = $roomsModel->updateRoomTypeStatus($idsArray, $status);
-//             if ($result) {
-//                 echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái loại phòng thành công.']);
-//             } else {
-//                 echo json_encode(['success' => false, 'message' => 'Cập nhật trạng thái loại phòng thất bại.']);
-//             }
-//         } else {
-//             echo json_encode(['success' => false, 'message' => 'Vui lòng cung cấp danh sách ID và trạng thái mới.']);
-//         }
-//         exit();
-//     }
-     
-//     public function create(){
-//         try {
+    public function checkPassword() {
+        $identifier = trim($_POST['identifier'] ?? ''); 
+        $password   = trim($_POST['password'] ?? '');
 
-//             $roomType = [
-//                 "typeName"    => isset($_POST['roomtype-name']) ? trim($_POST['roomtype-name']) : '',
-//                 "description" => isset($_POST['roomtype-description']) ? trim($_POST['roomtype-description']) : '',
-//                 "price"       => isset($_POST['roomtype-price']) ? trim($_POST['roomtype-price']) : '',
-//                 "discount"    => isset($_POST['roomtype-discount']) ? trim($_POST['roomtype-discount']) : '',
-//                 "maxGuests"   => isset($_POST['roomtype-max-guests']) ? (int)$_POST['roomtype-max-guests'] : 0,
-//                 "bedType"     => isset($_POST['roomtype-bed-type']) ? trim($_POST['roomtype-bed-type']) : '',
-//                 "thumbnail"   => null,
-//             ];
+        if (empty($identifier) || empty($password)) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(["success" => false, "message" => "Vui lòng cung cấp đủ thông tin!"]);
+            exit();
+        }
 
-//             if (
-//                 empty($roomType['typeName']) ||
-//                 empty($roomType['price']) ||
-//                 $roomType['maxGuests'] <= 0 ||
-//                 empty($roomType['bedType'])
-//             ) {
-//                 echo json_encode(['success' => false, 'message' => 'Vui lòng nhập đầy đủ tên và giá loại phòng.']);
-//                 exit();
-//             }
+        $model = $this->model('users');
+        $isCorrect = $model->verifyPassword($identifier, $password);
 
-//             if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] !== UPLOAD_ERR_NO_FILE) {
+        header('Content-Type: application/json; charset=utf-8');
+        if ($isCorrect) {
+            echo json_encode(["success" => true, "message" => "Mật khẩu chính xác!"]);
+        } else {
+            echo json_encode(["success" => false, "message" => "⛔ Mật khẩu không khớp!"]);
+        }
+        exit();
+    }
+    
+    // 5. API Cập nhật tài khoản (Không đụng đến pass)
+    public function update($id) {
+        $data = [
+            'username' => trim($_POST['username'] ?? ''),
+            'email'    => trim($_POST['email'] ?? ''),
+            'phone'    => trim($_POST['phone'] ?? ''),
+            'role'     => trim($_POST['role'] ?? 'Staff'),
+            'status'   => trim($_POST['status'] ?? 'Active')
+        ];
 
-//                 $uploadResult = UploadHelper::uploadImage($_FILES['thumbnail'], 'public/uploads/roomtypes/');
-//                 if (!$uploadResult['success']) {
-//                     echo json_encode(['success' => false, 'message' => $uploadResult['message']]);
-//                     exit();
-//                 }
-//                 $roomType['thumbnail'] = $uploadResult['fileName'];
-//             }
+        $model = $this->model("users"); // Đã fix thành 'users'
+        $result = $model->updateUser((int)$id, $data);
+        echo json_encode([
+            "success" => (bool)$result,
+            "message" => $result ? "Cập nhật tài khoản thành công!" : "Cập nhật thất bại."
+        ]);
+        exit();
+    }
 
-//             $model = $this->model('roomstype');
-//             $result = $model->addRoomType($roomType);
+    // 6. API Reset mật khẩu về 123456
+    public function resetPass($id) {
+        $model = $this->model("users"); // Đã fix thành 'users'
+        $result = $model->resetPassword((int)$id);
+        echo json_encode([
+            "success" => (bool)$result,
+            "message" => $result ? "🔑 Đã đặt lại mật khẩu về mặc định: 123456" : "Reset mật khẩu thất bại!"
+        ]);
+        exit();
+    }
 
-//             echo json_encode([
-//                 'success' => (bool)$result,
-//                 'message' => $result ? 'Thêm loại ' . $roomType["typeName"] . ' phòng thành công.' : 'Thêm loại ' . $roomType["typeName"] . ' phòng thất bại.'
-//             ]);
-//             exit();
-//         } catch (\Throwable $e) {
-//             header('Content-Type: application/json; charset=utf-8');
-//             echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
-//             exit();
-//         }
-//     }
-//     public function getRoomTypeOne($id){   
-//         // $id  = trim($_GET['id'] ?? '');
-//         $model = $this->model('roomstype');
-//         $roomType = $model->getRoomTypeById($id);
-//         header('Content-Type: application/json');
-//         echo json_encode($roomType);
-//         exit();
-//     }
-//     public function update($id){
-//         try {
-
-//             $roomType = [
-//                 "typeName"    => isset($_POST['roomtype-name']) ? trim($_POST['roomtype-name']) : '',
-//                 "description" => isset($_POST['roomtype-description']) ? trim($_POST['roomtype-description']) : '',
-//                 "price"       => isset($_POST['roomtype-price']) ? trim($_POST['roomtype-price']) : '',
-//                 "discount"    => isset($_POST['roomtype-discount']) ? trim($_POST['roomtype-discount']) : '',
-//                 "maxGuests"   => isset($_POST['roomtype-max-guests']) ? (int)$_POST['roomtype-max-guests'] : 0,
-//                 "bedType"     => isset($_POST['roomtype-bed-type']) ? trim($_POST['roomtype-bed-type']) : '',
-//                 "thumbnail"   => null,
-//             ];
-
-//             if (isset($_FILES['thumbnail']) && $_FILES['thumbnail']['error'] !== UPLOAD_ERR_NO_FILE) {
-//                 $uploadResult = UploadHelper::uploadImage($_FILES['thumbnail'], 'public/uploads/roomtypes/');
-//                 if (!$uploadResult['success']) {
-//                     echo json_encode(['success' => false, 'message' => $uploadResult['message']]);
-//                     exit();
-//                 }
-//                 $roomType['thumbnail'] = $uploadResult['fileName'];
-//             }
-
-//             $model = $this->model('roomstype');
-//             $result = $model->updateRoomType($id, $roomType);
-//             echo json_encode([
-//                 'success' => (bool)$result,
-//                 'message' => $result ? 'Cập nhật ' . $roomType["typeName"] . ' loại phòng thành công.' : 'Cập nhật ' . $roomType["typeName"] . ' loại phòng thất bại.'
-//             ]);
-//             exit();
-//         } catch (\Throwable $e) {
-//             header('Content-Type: application/json; charset=utf-8');
-//             echo json_encode(['success' => false, 'message' => 'Lỗi hệ thống: ' . $e->getMessage()]);
-//             exit();
-//         }
-//     }
-//     public function delete(){
-//          $input = json_decode(file_get_contents('php://input'), true) ?? [];
-//         try {
-//             $model = $this->model("roomstype");
-//             $ids = $input['ids'] ?? [];
-//             $result = $model->deleteRoomType($ids);
-//             echo json_encode([
-//                 "success" => $result,
-//                 "message" => $result
-//                     ? "Xóa loại phòng thành công."
-//                     : "Xóa loại phòng thất bại."
-//             ]);
-//             exit();
-//         } catch (\Throwable $e) {
-//             echo json_encode([
-//                 "success" => false,
-//                 "message" => $e->getMessage()
-//             ]);
-//             exit();
-//         }
-//     }
+    // 7. API Xóa tài khoản
+    public function delete() {
+        $input = json_decode(file_get_contents('php://input'), true) ?? [];
+        $model = $this->model("users"); // Đã fix thành 'users'
+        $result = $model->deleteUsers($input['ids'] ?? []);
+        echo json_encode([
+            "success" => (bool)$result,
+            "message" => $result ? "Xóa tài khoản thành công!" : "Xóa tài khoản thất bại."
+        ]);
+        exit();
+    }
 }

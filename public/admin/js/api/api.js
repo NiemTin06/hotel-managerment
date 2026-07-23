@@ -58,9 +58,7 @@ export class API {
             }
 
             return await response.json();
-            // const text = await response.text();
-            // console.log(text);
-            // return JSON.parse(text);
+            // const text = await response.text(); console.log(text);return JSON.parse(text);
         } catch (error) {
 
             console.log("API Error:", error);

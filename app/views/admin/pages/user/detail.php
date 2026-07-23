@@ -1,41 +1,28 @@
 <div class="popup-container" id="popup-detail">
     <div class="popup-content">
 
-        <div class="card">
+        <div class="card shadow-lg border-0 rounded-4">
 
-            <div class="card-header">
-                <h3>Chi tiết loại phòng</h3>
+            <div class="card-header bg-info text-white py-3">
+                <h3 class="h5 mb-0">Chi tiết tài khoản nhân viên</h3>
             </div>
 
-            <div class="card-body">
-
-                <div class="text-center mb-3">
-                    <img id="detail-thumbnail"
-                         src="/images/no-image.png"
-                       >
-                </div>
-
-                <p><b>Tên:</b> <span id="detail-name"></span></p>
-
-                <p><b>Giá:</b> <span id="detail-price"></span></p>
-
-                <p><b>Giảm giá:</b> <span id="detail-discount"></span></p>
-
-                <p><b>Sức chứa:</b> <span id="detail-max-guests"></span></p>
-
-                <p><b>Loại giường:</b> <span id="detail-bed-type"></span></p>
-
-                <p><b>Trạng thái:</b> <span id="detail-status"></span></p>
-
-                <p><b>Mô tả:</b></p>
-
-                <div id="detail-description"></div>
-
+            <div class="card-body p-4">
+                <p><b>ID Tài khoản:</b> <span id="detail-user-id"></span></p>
+                <p><b>Tên tài khoản:</b> <span id="detail-user-username" class="fw-bold text-primary"></span></p>
+                <p><b>Email:</b> <span id="detail-user-email"></span></p>
+                <p><b>Số điện thoại:</b> <span id="detail-user-phone"></span></p>
+                <p><b>Quyền hạn:</b> <span id="detail-user-role"></span></p>
+                <p><b>Trạng thái:</b> <span id="detail-user-status"></span></p>
+                <hr>
+                <p class="mb-0 text-muted"><small><b>Ngày tạo:</b> <span id="detail-user-created"></span></small></p>
             </div>
 
-            <div class="card-footer text-end">
-                <button class="btn btn-secondary"
-                        id="btn-close-detail">
+            <div class="card-footer text-end bg-light py-3">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="btn-close-detail">
                     Đóng
                 </button>
             </div>

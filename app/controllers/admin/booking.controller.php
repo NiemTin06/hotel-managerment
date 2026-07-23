@@ -11,7 +11,6 @@ class BookingController extends Controller {
         $this->view('admin/layout/main_layout', $data);
         exit();
     }
-
     public function getBookingData() {
         $page = max(1, (int)($_GET['page'] ?? 1));
         $limit = 10;
@@ -45,7 +44,6 @@ class BookingController extends Controller {
         ]);
         exit();
     }
-
     public function create() {
         try {
             $data = [
@@ -80,7 +78,6 @@ class BookingController extends Controller {
             exit();
         }
     }
-
     public function getOne($id) {
         $model = $this->model('bookings');
         $booking = $model->getBookingById((int)$id);
@@ -88,7 +85,6 @@ class BookingController extends Controller {
         echo json_encode($booking);
         exit();
     }
-
     // API Lấy danh sách phòng vật lý đang trống để Lễ tân chọn lúc Check-in
     public function getAvailableRooms($roomTypeId) {
         $model = $this->model('bookings');
@@ -97,7 +93,6 @@ class BookingController extends Controller {
         echo json_encode(["success" => true, "rooms" => $rooms]);
         exit();
     }
-
     // API Xử lý Check-in
     public function checkIn($id) {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
@@ -116,7 +111,6 @@ class BookingController extends Controller {
         ]);
         exit();
     }
-
     // API Xử lý Check-out
     public function checkOut($id) {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
@@ -130,7 +124,6 @@ class BookingController extends Controller {
         ]);
         exit();
     }
-
     public function delete() {
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $model = $this->model("bookings");
@@ -142,7 +135,6 @@ class BookingController extends Controller {
         ]);
         exit();
     }
-
     public function update($id) {
     try {
         $data = [
@@ -172,9 +164,11 @@ class BookingController extends Controller {
             "message" => $result ? "Cập nhật đơn đặt phòng thành công!" : "Cập nhật đơn thất bại."
         ]);
         exit();
-    } catch (\Throwable $e) {
-        echo json_encode(["success" => false, "message" => "Lỗi hệ thống: " . $e->getMessage()]);
-        exit();
+        } catch (\Throwable $e) {
+            echo json_encode(["success" => false, "message" => "Lỗi hệ thống: " . $e->getMessage()]);
+            exit();
+        }
     }
-}
+
+    
 }

@@ -1,6 +1,5 @@
 <?php
 
-$app->get("/admin", 'HomeController@index');
 
 require_once 'auth.route.php';
 require_once 'dashboard.route.php';

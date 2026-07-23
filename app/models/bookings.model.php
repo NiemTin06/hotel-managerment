@@ -168,7 +168,7 @@ class BookingsModel extends Database {
     }
 
     // Nghiệp vụ Trả phòng Check-out
-    public function checkOutBooking(int $bookingId, int $roomId = null): bool {
+    public function checkOutBooking(int $bookingId, ?int $roomId = null): bool {
         try {
             $db = $this->connect();
             $db->beginTransaction();
@@ -203,26 +203,26 @@ class BookingsModel extends Database {
     }
 
     public function updateBooking(int $id, array $data): bool {
-    $sql = "
-        UPDATE Booking SET 
-            BOOKING_CUSTOMER_ID = :customer,
-            BOOKING_ROOMTYPE_ID = :roomtype,
-            BOOKING_CHECKIN = :checkin,
-            BOOKING_CHECKOUT = :checkout,
-            BOOKING_TOTAL_PRICE = :price,
-            BOOKING_STATUS = :status,
-            BOOKING_NOTE = :note
-        WHERE BOOKING_ID = :id
-    ";
-    $stmt = $this->connect()->prepare($sql);
-    $stmt->bindParam(":customer", $data['customerId'], PDO::PARAM_INT);
-    $stmt->bindParam(":roomtype", $data['roomTypeId'], PDO::PARAM_INT);
-    $stmt->bindParam(":checkin", $data['checkin']);
-    $stmt->bindParam(":checkout", $data['checkout']);
-    $stmt->bindParam(":price", $data['totalPrice']);
-    $stmt->bindParam(":status", $data['status']);
-    $stmt->bindParam(":note", $data['note']);
-    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
-    return $stmt->execute();
-}
+        $sql = "
+            UPDATE Booking SET 
+                BOOKING_CUSTOMER_ID = :customer,
+                BOOKING_ROOMTYPE_ID = :roomtype,
+                BOOKING_CHECKIN = :checkin,
+                BOOKING_CHECKOUT = :checkout,
+                BOOKING_TOTAL_PRICE = :price,
+                BOOKING_STATUS = :status,
+                BOOKING_NOTE = :note
+            WHERE BOOKING_ID = :id
+        ";
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->bindParam(":customer", $data['customerId'], PDO::PARAM_INT);
+        $stmt->bindParam(":roomtype", $data['roomTypeId'], PDO::PARAM_INT);
+        $stmt->bindParam(":checkin", $data['checkin']);
+        $stmt->bindParam(":checkout", $data['checkout']);
+        $stmt->bindParam(":price", $data['totalPrice']);
+        $stmt->bindParam(":status", $data['status']);
+        $stmt->bindParam(":note", $data['note']);
+        $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
 }

@@ -6,6 +6,7 @@ class ClientbookingsModel extends Database {
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         try {
+            // Bat dau thuc hien cac cau lenh sql the mot nhom, chi khi commit thi mmoi thay doi moi duoc luu vao database
             $db->beginTransaction();
             $customerId = $this->findOrCreateCustomer($db, $customer);
             $roomStmt = $db->prepare("
