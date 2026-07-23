@@ -1,4 +1,4 @@
-<header style="background: #333; padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center;">
+<header style="background-color: rgb(86, 86, 231); padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center;">
     <div class="logo"><a href="<?php echo URLROOT; ?>/" style="color: white; text-decoration: none; font-weight: bold;">HOTEL MANAGER</a></div>
     <nav>
         <a href="<?php echo URLROOT; ?>/" style="color: white; margin-left: 15px; text-decoration: none;">Trang Chủ</a>
