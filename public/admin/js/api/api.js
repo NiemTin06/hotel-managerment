@@ -1,4 +1,3 @@
-// Ham xu ly API
 export class API {
 
     static get(url) {
@@ -6,66 +5,56 @@ export class API {
     }
 
     static post(url, data) {
-        return this.request(url, {
-            method: "POST",
-            body: data
-        });
+        return this.request(url, { method: "POST", body: data });
     }
 
     static patch(url, data) {
-        return this.request(url, {
-            method: "PATCH",
-            body: data
-        });
+        return this.request(url, { method: "PATCH", body: data });
     }
 
     static delete(url, data) {
-        return this.request(url, {
-            method: "DELETE",
-            body: data
-        });
+        return this.request(url, { method: "DELETE", body: data });
     }
 
     static async request(url, options = {}) {
 
-        // Nếu body là object thường => gửi JSON
-        if (
-            options.body &&
-            !(options.body instanceof FormData)
-        ) {
+        options.headers = {
+            ...options.headers,
+            "X-Requested-With": "XMLHttpRequest"
+        };
 
-            options.headers = {
-                ...options.headers,
-                "Content-Type": "application/json"
-            };
-
+        if (options.body && !(options.body instanceof FormData)) {
+            options.headers["Content-Type"] = "application/json";
             options.body = JSON.stringify(options.body);
-
         }
-
-        // Nếu body là FormData
-        // => Không set Content-Type
-        // Browser sẽ tự thêm multipart/form-data
 
         try {
-            const response = await fetch(
-                `${APP_URLROOT}/${url}`,
-                options
-            );
-           
-            if (!response.ok) {
-                throw new Error(`HTTP Error: ${response.status}`);
+            const response = await fetch(`${APP_URLROOT}/${url}`, options);
+            const raw = await response.text();
+
+            let data;
+            try {
+                data = JSON.parse(raw);
+            } catch (parseErr) {
+                console.error("Server không trả JSON hợp lệ. Raw response:", raw);
+                throw new Error("Invalid JSON response from server");
             }
 
-            return await response.json();
-            // const text = await response.text(); console.log(text);return JSON.parse(text);
-        } catch (error) {
+            // Session hết hạn -> tự redirect
+            if (response.status === 401 && data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+                return;
+            }
 
+            if (!response.ok) {
+                throw new Error(data.message || `HTTP Error: ${response.status}`);
+            }
+
+            return data;
+
+        } catch (error) {
             console.log("API Error:", error);
             throw error;
-
         }
-
     }
-
 }

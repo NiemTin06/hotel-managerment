@@ -1,5 +1,9 @@
 <?php
 class CustomerController extends Controller {
+     public function __construct() {
+        parent::__construct(); // gọi initSession()
+        requireLogin();     
+    }
     public function index() {
         $data = [
             'title' => 'Quản lý Khách hàng',

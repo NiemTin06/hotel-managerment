@@ -1,3 +1,3 @@
 <?php 
 
-$app->get("/admin", 'DashboardController@index');
+$app->get("/admin/dashboard", 'DashboardController@index');

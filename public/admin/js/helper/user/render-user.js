@@ -19,6 +19,7 @@ export function renderUser(users, container) {
         const roleMap = {
             Admin: `<span class="badge bg-danger fw-bold">Admin</span>`,
             Staff: `<span class="badge bg-info text-dark fw-bold">Staff</span>`,
+            Customer:`<span class = "badge text-bg-light fw-bold">Customer</span>`,
         };
         const roleHtml = roleMap[user.USER_ROLE] ?? `<span class="badge bg-light text-dark">Staff</span>`;
 

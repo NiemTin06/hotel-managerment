@@ -1,7 +1,11 @@
 <?php
 require_once 'app/helpers/upload.helper.php';
 class RoomController extends Controller
-{
+{   
+     public function __construct() {
+        parent::__construct(); // gọi initSession()
+        requireLogin();     
+    }
     public function index(){
 
         $data = [

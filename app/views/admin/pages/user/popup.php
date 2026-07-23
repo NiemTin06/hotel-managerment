@@ -86,6 +86,7 @@
                                     name="role">
                                     <option value="Staff">Staff (Lễ tân)</option>
                                     <option value="Admin">Admin (Quản lý)</option>
+                                    <option value="Customer">Customer (khách hàng)</option>
                                 </select>
                             </div>
 

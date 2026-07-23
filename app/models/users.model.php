@@ -86,7 +86,7 @@ class UsersModel extends Database {
         return (int)$stmt->fetchColumn();
     }
 
-    public function getUser($identifier) {
+    public function getUser($identifier) { 
         $sql = "SELECT * FROM `User` 
                 WHERE USER_ID = :id 
                    OR USER_USERNAME = :username 

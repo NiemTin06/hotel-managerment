@@ -3,8 +3,10 @@
     <h2>Menu</h2>
 
     <ul>
-        <li><a href="<?php  echo URLROOT; ?>/admin">Dashboard</a></li>
-        <li><a href="<?php echo URLROOT; ?>/admin/users">Danh sách người dùng</a></li>
+        <li><a href="<?php  echo URLROOT; ?>/admin/dashboard">Dashboard</a></li>
+        <?php if (($_SESSION['user_role'] ?? null) === 'Admin'): ?>
+            <li><a href="<?php echo URLROOT; ?>/admin/users">Danh sách người dùng</a></li>
+        <?php endif; ?>
         <li><a href="<?php echo URLROOT; ?>/admin/rooms">Danh sách phòng</a></li>
         <li><a href="<?php echo URLROOT; ?>/admin/rooms-type">Danh sách loại phòng</a></li>
         <li><a href="<?php echo URLROOT; ?>/admin/customers">Danh sách khách hàng</a></li>

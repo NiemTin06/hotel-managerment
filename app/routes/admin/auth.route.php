@@ -1,7 +1,4 @@
 <?php
-
-$app->get('/signup', 'SignupController@index');
-$app->post('/signupPost', 'SignupController@signupUser');
-
-$app->get("/login", "LoginController@index");
-$app->post("/loginPost", 'LoginController@loginUser');
+$app->get("/admin/login", "LoginController@index");
+$app->post("/admin/loginPost", 'LoginController@loginUser');
+$app->get("/admin/logout", "LoginController@logout");

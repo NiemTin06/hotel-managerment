@@ -1,5 +1,9 @@
 <?php 
 class DashboardController extends Controller {
+     public function __construct() {
+        parent::__construct(); // gọi initSession()
+        requireLogin();     
+    }
     public function index(){
         // Chuẩn bị dữ liệu hiển thị (ví dụ tên khách sạn)
         $data = [

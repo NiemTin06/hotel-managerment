@@ -1,7 +1,12 @@
 <?php
 
 class Controller {
-    
+    public function __construct() {
+        require_once __DIR__ . '/../config/session.php';
+        require_once __DIR__ . '/../helpers/auth.helper.php';
+
+        initSession();
+    }
     // Nạp Model tính từ thư mục gốc
     public function model($modelName) {
          $fileName = strtolower($modelName) . ".model.php";

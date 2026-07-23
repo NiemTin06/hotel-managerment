@@ -1,5 +1,9 @@
 <?php
 class BookingController extends Controller {
+     public function __construct() {
+        parent::__construct(); // gọi initSession()
+        requireLogin();     
+    }
     public function index() {
         $data = [
             'title' => 'Quản lý Đặt phòng',

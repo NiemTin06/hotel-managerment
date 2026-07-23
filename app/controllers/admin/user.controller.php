@@ -1,6 +1,10 @@
 <?php
 class UserController extends Controller {
-    
+     public function __construct() {
+        parent::__construct(); // gọi initSession()
+        requireLogin();     
+        requireRole('Admin');
+    }
     // 1. Load giao diện trang quản lý
     public function index() {
         $data = [

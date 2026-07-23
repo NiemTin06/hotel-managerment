@@ -2,6 +2,10 @@
 require_once 'app/helpers/upload.helper.php';
 class RoomTypeController extends Controller
 {
+     public function __construct() {
+        parent::__construct(); // gọi initSession()
+        requireLogin();     
+    }
     public function index(){
         $data = [
             'title' => 'Danh sách loại phòng khách sạn',

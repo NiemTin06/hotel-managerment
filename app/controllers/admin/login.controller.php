@@ -3,33 +3,44 @@
 class LoginController extends Controller{
     private $userInput;
     private $pwd;
+ public function __construct() {
+        parent::__construct(); // gọi initSession()  
+    }
     public function index() {
         $data = [
             'title' => 'Đăng nhập Hệ Thống',
-            'view_content' => 'pages/auth/login' 
+            'view_content' => 'pages/auth/login',
+            'page_script' => 'login',
+            'link' => 'login'
         ];
-        $this->view('admin/layout/main_layout', $data);
+        $this->view('admin/layout/login_layout', $data);
     }
 
-     public function loginUser(){
+    public function loginUser(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->userInput = trim($_POST["userInput"]);
-            $this->pwd = trim($_POST["pwd"]);
+            $this->userInput = trim($_POST["userInput"] ?? '');
+            $this->pwd = trim($_POST["pwd"] ?? '');
+
+            // 1. Kiểm tra trống
             if ($this->emptyInput()){
                 echo json_encode(['status' => 'error', 'message' => 'Vui lòng điền đầy đủ thông tin!']);
                 exit();
             }
 
+            // 2. Tìm kiếm user thông qua model 'users' (Dùng hàm getUser đã viết sẵn)
             $UserModel = $this->model('users');
             $user = $UserModel->getUser($this->userInput);
+
             if (!$user){
                 echo json_encode([
                     'status' => 'error',
-                    'message' => 'Tài khoản không tồn tại!'
+                    'message' => 'Tài khoản hoặc Email không tồn tại!'
                 ]);
                 exit();
             }
-             if ($this->invalidPassword($user['users_pwd'])){
+
+            // 3. Kiểm tra mật khẩu (Khớp với cột USER_PASSWORD trong CSDL)
+            if ($this->invalidPassword($user['USER_PASSWORD'])){
                 echo json_encode([
                     'status' => 'error',
                     'message' => 'Mật khẩu không chính xác!'
@@ -37,25 +48,34 @@ class LoginController extends Controller{
                 exit();
             }
 
-                // Tài khoản bị khóa
-            // if ($this->isAccountBlocked($user)){
-            //     echo json_encode([
-            //         'status' => 'error',
-            //         'message' => 'Tài khoản đã bị khóa!'
-            //     ]);
-            //     exit();
-            // }
+            // 4. Kiểm tra trạng thái tài khoản (Active / Inactive)
+            if ($user['USER_STATUS'] !== 'Active'){
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Tài khoản của bạn đã bị khóa hoặc chưa kích hoạt!'
+                ]);
+                exit();
+            }
 
+            // 5.  CHẶN KHÁCH HÀNG (CUSTOMER): Chỉ cho phép Admin hoặc Staff đăng nhập
+            if ($user['USER_ROLE'] !== 'Admin' && $user['USER_ROLE'] !== 'Staff') {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => ' Tài khoản khách hàng (Customer) không có quyền truy cập trang quản trị!'
+                ]);
+                exit();
+            }
+
+            // 6. Tạo Session đăng nhập (Khớp với các cột USER_ID, USER_USERNAME, USER_ROLE)
             $this->createSession($user);
-
             echo json_encode([
                 'status' => 'success',
-                'message' => 'Đăng nhập tài khoản thành công!'
+                'message' => 'Đăng nhập tài khoản thành công!',
+                'redirectUrl' => URLROOT . '/admin/dashboard' // Trả về đường dẫn để JS chuyển trang
             ]);
             exit();
         }
     }
-
 
     private function emptyInput(){
         if (empty($this->userInput) || empty($this->pwd)){
@@ -63,34 +83,32 @@ class LoginController extends Controller{
         }
         return false;
     }
-    private function notUserExists(){
-        $UserModel = $this->model('users');
-        if (!$UserModel->checkUser($this->userInput, $this->userInput)){
-            return true;
-        }
-        return false;
-    }
+
     private function invalidPassword($hashedPwd){
         if (!password_verify($this->pwd, $hashedPwd)){
             return true;
         }
         return false;
     }
-    // private function isAccountBlocked($user){
-    //     if ($user['status'] !== 'active'){
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    // private function tooManyAttempts($user){
-    //     if ($user['failed_login'] >= 5){
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    private function createSession($user){
-        $_SESSION['user_id'] = $user['users_id'];
-        $_SESSION['username'] = $user['users_uid'];
-    }
-}
 
+    private function createSession($user){
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION['user_id'] = $user['USER_ID'];
+        $_SESSION['username'] = $user['USER_USERNAME'];
+        $_SESSION['user_role'] = $user['USER_ROLE'];
+    }
+
+    public function logout() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    session_unset();
+    session_destroy();
+
+    header('Location: ' . URLROOT . '/admin/login');
+    exit();
+}
+}
