@@ -7,55 +7,6 @@
 .inner-wrap {
   display: flex;
 }
-
-.sidebar {
-  width: 250px;
-  min-height: 100vh;
-  background-color: rgb(86, 86, 231);
-  color: #ffd700;
-  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
-}
-
-.sidebar h2 {
-  padding: 22px;
-  text-align: center;
-  font-size: 28px;
-  font-weight: bold;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.sidebar ul {
-  margin: 0;
-  padding: 15px 12px;
-}
-
-.sidebar ul li {
-  list-style: none;
-  margin-bottom: 10px;
-}
-
-.sidebar ul li a {
-  display: block;
-  color: white;
-  text-decoration: none;
-  padding: 14px 18px;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 500;
-  transition: 0.3s;
-}
-
-.sidebar ul li a:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateX(6px);
-}
-
-.sidebar ul li.active a {
-  background: white;
-  color: #1565c0;
-  font-weight: bold;
-}
-
 .content {
   flex: 1;
   padding: 20px;
@@ -182,4 +133,141 @@
 .pagination button.active {
   background: #0d6efd;
   color: #fff;
+}
+
+
+footer{
+  background-color: #333333; color: #bbb; text-align: center; padding: 20px;
+}
+
+/* Header Container */
+.main-header {
+    background-color: #333333;
+    padding: 15px;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo */
+.main-header .logo a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Navigation Base */
+.main-nav {
+    display: flex;
+    align-items: center;
+}
+
+.main-nav .nav-link {
+    color: #ffffff;
+    margin-left: 15px;
+    text-decoration: none;
+}
+
+/* User Info Styling */
+.user-info {
+    margin-left: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.user-role {
+    opacity: 0.7;
+}
+
+/* Logout Button */
+.btn-logout {
+    margin-left: 15px;
+    background-color: #c0392b;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-logout:hover {
+    background-color: #e74c3c;
+}
+
+
+
+
+/* Reset căn bản */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Đảm bảo toàn bộ body kéo dài ít nhất full màn hình (100vh) */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Khối main co giãn chiếm trọn phần khoảng trống giữa Header và Footer */
+main.inner-wrap {
+    flex: 1;
+    display: flex;
+    width: 100%;
+}
+
+/* Sidebar cấu trúc Flexbox */
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    background-color: #333333;
+}
+
+/* CSS khi thu nhỏ Sidebar (Collapse state) */
+.sidebar.collapsed {
+    width: 65px;
+    min-width: 65px;
+}
+
+.sidebar.collapsed .link-text {
+    display: none; /* Ẩn chữ, chỉ để lại icon */
+}
+
+.sidebar.collapsed #sidebar-toggle {
+    margin: 0 auto;
+    display: block;
+}
+
+/* Khối nội dung chính tự dạt sang bên */
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-x: auto;
+}
+.sidebar {
+  padding: 0;
+  margin: 0;
+}
+
+
+.sidebar ul li a{ 
+  /* background-color: black; */
+  color: white;
+}
+.sidebar ul li a:hover{
+   background-color: white;
+  color: black;
+}
+
+.sidebar ul li a{
+  padding: 10px;
+  margin: 0;
 }

@@ -1,0 +1,26 @@
+.content {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: 100vh;
+     width: 100vh;
+    background-image: linear-gradient(to bottom right, #0100EC, #FB36F4);
+}
+
+.inner-login{
+    border-radius: 15px;
+    padding : 100px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+   background-color:  white
+}
+
+.login-title{
+    text-align: center;
+}
+
+.inner-login form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    justify-content: center;
+}

@@ -19,7 +19,7 @@ class UserController extends Controller {
     // 2. API Lấy danh sách (Có tìm kiếm & phân trang)
 public function getUserData() {
         $page = max(1, (int)($_GET['page'] ?? 1));
-        $limit = 10;
+        $limit = 5;
         $offset = ($page - 1) * $limit;
         
         $filter = [
