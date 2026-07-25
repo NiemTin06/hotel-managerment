@@ -17,10 +17,11 @@ class ClientRoomController extends Controller {
 
     public function getData(){
         try {
+            // chuẩn hoá và kiểm tra ngày nhận trả
             [$checkin, $checkout, $checkedDate] = $this->resolveDates(
                 trim($_GET['checkin'] ?? ''), trim($_GET['checkout'] ?? '')
             );
-
+            // gom các điều kiện lọc vào model
             $filters = [
                 'roomTypeId' => (int)($_GET['room-type'] ?? 0),
                 'sortBy' => trim($_GET['sort-by'] ?? ''),
@@ -50,32 +51,36 @@ class ClientRoomController extends Controller {
             ]);
         }
     }
+    // Xử lý ngày nhận và ngày trả;
+private function resolveDates(string $checkin, string $checkout): array {
+    // Chưa chọn ngày thì dùng ngày tạm để tải danh sách phòng
+    if ($checkin === '' && $checkout === '') {
+        $checkin = date('Y-m-d');
+        $checkout = date('Y-m-d', strtotime('+1 day'));
 
-    private function resolveDates(string $checkin, string $checkout): array
-    {
-        if ($checkin === '' && $checkout === '') {
-            $checkin = date('Y-m-d');
-            $checkout = date('Y-m-d', strtotime('+1 day'));
-            return [$checkin, $checkout, false];
-        }
-
-        if ($checkin === '' || $checkout === '') {
-            throw new InvalidArgumentException('Vui lòng chọn đầy đủ ngày nhận và ngày trả.');
-        }
-
-        if (!$this->isDate($checkin) || !$this->isDate($checkout)) {
-            throw new InvalidArgumentException('Ngày nhận hoặc ngày trả không hợp lệ.');
-        }
-
-        if ($checkin < date('Y-m-d')) {
-            throw new InvalidArgumentException('Ngày nhận phòng không được nhỏ hơn ngày hiện tại.');
-        }
-
-        if ($checkout <= $checkin) {
-            throw new InvalidArgumentException('Ngày trả phải sau ngày nhận phòng.');
-        }
-        return [$checkin, $checkout, true];
+        // false: chưa kiểm tra phòng trống theo ngày
+        return [$checkin, $checkout, false];
     }
+
+    if ($checkin === '' || $checkout === '') {
+        throw new InvalidArgumentException('Vui lòng chọn đầy đủ ngày nhận và ngày trả.');
+    }
+
+    // Kiểm tra định dạng ngày
+    if (!$this->isDate($checkin) || !$this->isDate($checkout)) {
+        throw new InvalidArgumentException('Ngày nhận hoặc ngày trả không hợp lệ.');
+    }
+
+    if ($checkin < date('Y-m-d')) {
+        throw new InvalidArgumentException('Ngày nhận phòng không được nhỏ hơn ngày hiện tại.');
+    }
+
+    if ($checkout <= $checkin) {
+        throw new InvalidArgumentException('Ngày trả phải sau ngày nhận phòng.');
+    }
+
+    return [$checkin, $checkout, true];
+}
 
     private function isDate(string $date): bool {
         $value = DateTime::createFromFormat('!Y-m-d', $date);

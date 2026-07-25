@@ -1,6 +1,7 @@
 <?php
 
 class ClientBookingController extends Controller{
+    // hiện trang đặt phòng và điền sẵn thông tin khách hàng từ session.
     public function index(){
         $data = [
             'title' => 'Đặt phòng',
@@ -8,12 +9,18 @@ class ClientBookingController extends Controller{
             'view_content' => 'pages/booking/index',
             'page_style' => 'booking',
             'page_script' => 'booking',
-            'link' => 'bookings'
+            'link' => 'bookings',
+            'customer' => [
+                'fullname' => $_SESSION['customer_fullname'] ?? '',
+                'phone' => $_SESSION['customer_phone'] ?? '',
+                'email' => $_SESSION['customer_email'] ?? '',
+                'cccd' => $_SESSION['customer_cccd'] ?? ''
+            ]
         ];
         $this->view('client/layout/main_layout', $data);
         exit();
     }
-
+    // API lấy loại phòng đã chọn và kiểm tra số phòng còn trống theo ngày.
     public function getData(){
         try {
             $roomTypeId = (int)($_GET['room_type_id'] ?? 0);
@@ -61,7 +68,7 @@ class ClientBookingController extends Controller{
             ]);
         }
     }
-
+    // Nhận form đặt phòng, kiểm tra dữ liệu, tính tổng tiền và tạo booking.
     public function process(){
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->json([
@@ -79,7 +86,7 @@ class ClientBookingController extends Controller{
             $note = trim($_POST['booking-note'] ?? '');
 
             [$checkin, $checkout] = $this->resolveDates(trim($_POST['booking-checkin'] ?? ''), trim($_POST['booking-checkout'] ?? ''));
-
+        
             if ($roomTypeId <= 0) {
                 throw new InvalidArgumentException('Vui lòng chọn loại phòng.');
             }
