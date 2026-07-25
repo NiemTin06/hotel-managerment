@@ -205,7 +205,7 @@ async function loadRoomTypes() {
 
     try {
         const result = await API.get(
-            'rooms/client/data?' + params.toString()
+            'rooms/data?' + params.toString()
         );
 
         if (!result.success) {

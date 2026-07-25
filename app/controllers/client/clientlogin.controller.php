@@ -1,10 +1,9 @@
 <?php
 
 class ClientLoginController extends Controller {
-    // hiện trang đăng nhập, lấy thông báo lỗi, thành công từ session
     public function index() {
-        if ($this->isCustomerLoggedIn()) {
-            $this->redirect('/');
+        if (isCustomerLoggedIn()) {
+            redirect('/');
         }
 
         $data = [
@@ -23,49 +22,50 @@ class ClientLoginController extends Controller {
     //  xu lí kiểm tra dữ liệu đăng nhập, trạng thái, quyền...
     public function loginUser() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('/login');
+            redirect('/login');
         }
         // lấy user, pass từ form
         $userInput = trim($_POST['userInput'] ?? '');
         $password = $_POST['pwd'] ?? '';
 
         if ($userInput === '' || $password === '') {
-            $this->errorMessage('/login', 'Vui lòng nhập đầy đủ tài khoản và mật khẩu.', [
-                'userInput' => $userInput
-            ]);
+            $this->errorMessage('/login', 'Vui lòng nhập đầy đủ tài khoản và mật khẩu.', ['userInput' => $userInput]);
         }
         // check user, pass từ form với dữ liệu lưu trong database
         $authModel = $this->model('clientauth');
         $user = $authModel->getUserByUsernameOrEmail($userInput);
 
         if (!$user || !password_verify($password, $user['USER_PASSWORD'])) {
-            $this->errorMessage('/login', 'Tài khoản hoặc mật khẩu không chính xác.', [
-                'userInput' => $userInput
-            ]);
+            $this->errorMessage('/login', 'Tài khoản hoặc mật khẩu không chính xác.', ['userInput' => $userInput]);
         }
 
         if ($user['USER_STATUS'] !== 'Active') {
-            $this->errorMessage('/login', 'Tài khoản đã bị khóa hoặc chưa kích hoạt.', [
-                'userInput' => $userInput
-            ]);
+            $this->errorMessage('/login', 'Tài khoản đã bị khóa hoặc chưa kích hoạt.', ['userInput' => $userInput]);
         }
 
-        // Chỉ customer đăng nhập.
         if ($user['USER_ROLE'] !== 'Customer') {
-            $this->errorMessage('/login', 'Tài khoản này không có quyền đăng nhập vào trang dành cho khách hàng.', [
-                'userInput' => $userInput
-            ]);
+            $this->errorMessage('/login', 'Tài khoản này không có quyền đăng nhập vào trang dành cho khách hàng.', ['userInput' => $userInput]);
         }
 
         $customer = $authModel->getCustomerForUser($user);
+
+        if (!$customer) {
+            $this->errorMessage('/login', 'Tài khoản chưa có hồ sơ khách hàng. Vui lòng đăng ký lại tài khoản khách hàng.', ['userInput' => $userInput]);
+        }
+
         $this->createSession($user, $customer);
-        $this->redirect('/');
+
+        $redirectPath = $_SESSION['redirect_after_login'] ?? '/';
+        unset($_SESSION['redirect_after_login']);
+
+        if (!is_string($redirectPath) || strpos($redirectPath, '/bookings') !== 0) {
+            $redirectPath = '/';
+        }
+        redirect($redirectPath);
     }
     // hiện trang đăng ký
     public function register() {
-        if ($this->isCustomerLoggedIn()) {
-            $this->redirect('/');
-        }
+        if (isCustomerLoggedIn()) redirect('/');
 
         $data = [
             'title' => 'Đăng ký khách hàng',
@@ -75,15 +75,13 @@ class ClientLoginController extends Controller {
             'error' => $_SESSION['auth_error'] ?? '',
             'old' => $_SESSION['auth_old'] ?? []
         ];
-        // điền lại dữ liệu cũ nếu đăng ký lỗi
+
         unset($_SESSION['auth_error'], $_SESSION['auth_old']);
         $this->view('client/layout/main_layout', $data);
     }
-    // xử lí đăng ký
+
     public function registerUser() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->redirect('/register');
-        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') redirect('/register');
 
         $fullname = trim($_POST['fullname'] ?? '');
         $username = trim($_POST['username'] ?? '');
@@ -92,12 +90,12 @@ class ClientLoginController extends Controller {
         $password = $_POST['password'] ?? '';
         $passwordConfirm = $_POST['password_confirm'] ?? '';
         // lưu thông tin cũ khi đăng ký lỗi
-        $old = [
+        $old = [ 
             'fullname' => $fullname,
             'username' => $username,
             'email' => $email,
             'phone' => $phone
-        ];
+            ];
         // thông báo lỗi
         if ($fullname === '' || $username === '' || $email === '' || $phone === '' || $password === '' || $passwordConfirm === '') {
             $this->errorMessage('/register', 'Vui lòng nhập đầy đủ thông tin.', $old);
@@ -152,7 +150,7 @@ class ClientLoginController extends Controller {
 
         unset($_SESSION['auth_error'], $_SESSION['auth_old']);
         $_SESSION['auth_success'] = 'Đăng ký thành công. Bạn có thể đăng nhập ngay.';
-        $this->redirect('/login');
+        redirect('/login');
     }
 
     public function logout() {
@@ -161,36 +159,25 @@ class ClientLoginController extends Controller {
         }
         session_unset();
         session_destroy();
-        $this->redirect('/login');
+        redirect('/login');
     }
-    // lưu thông tin customer user vao session khi đăng nhập thành công
-    private function createSession(array $user, $customer) {
+
+    private function createSession(array $user, array $customer): void {
         session_regenerate_id(true);
         $_SESSION['user_id'] = (int)$user['USER_ID'];
         $_SESSION['username'] = $user['USER_USERNAME'];
         $_SESSION['user_role'] = $user['USER_ROLE'];
         $_SESSION['last_activity'] = time();
-
-        if ($customer) {
-            $_SESSION['customer_id'] = (int)$customer['CUSTOMER_ID'];
-            $_SESSION['customer_fullname'] = $customer['CUSTOMER_FULLNAME'];
-            $_SESSION['customer_email'] = $customer['CUSTOMER_EMAIL'] ?? $user['USER_EMAIL'];
-            $_SESSION['customer_phone'] = $customer['CUSTOMER_PHONE'] ?? $user['USER_PHONE'];
-        }
+        $_SESSION['customer_id'] = (int)$customer['CUSTOMER_ID'];
+        $_SESSION['customer_fullname'] = $customer['CUSTOMER_FULLNAME'];
+        $_SESSION['customer_email'] = $customer['CUSTOMER_EMAIL'] ?? $user['USER_EMAIL'];
+        $_SESSION['customer_phone'] = $customer['CUSTOMER_PHONE'] ?? $user['USER_PHONE'];
+        $_SESSION['customer_cccd'] = $customer['CUSTOMER_CCCD'] ?? '';
     }
 
-    private function isCustomerLoggedIn() {
-        return !empty($_SESSION['user_id']) && ($_SESSION['user_role'] ?? '') === 'Customer';
-    }
-
-    private function errorMessage($path, $message, array $old = []) {
+    private function errorMessage(string $path, string $message, array $old = []): void {
         $_SESSION['auth_error'] = $message;
         $_SESSION['auth_old'] = $old;
-        $this->redirect($path);
-    }
-
-    private function redirect($path) {
-        header('Location: ' . URLROOT . $path);
-        exit();
+        redirect($path);
     }
 }

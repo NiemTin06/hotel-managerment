@@ -1,11 +1,36 @@
 <?php
 
-class ClientBookingController extends Controller{
-    // hiện trang đặt phòng và điền sẵn thông tin khách hàng từ session.
-    public function index(){
+class ClientBookingController extends Controller {
+    public function index() {
+        if (!isCustomerLoggedIn()) {
+            //lưu query để giữ lại loại phòng và ngày nhận/trả đã chọn.
+            $query = $_SERVER['QUERY_STRING'] ?? '';
+            $_SESSION['redirect_after_login'] = '/bookings'
+                . ($query !== '' ? '?' . $query : '');
+            $_SESSION['auth_error'] = 'Vui lòng đăng nhập để đặt phòng.';
+            redirect('/login');
+        }
+
+        if (empty($_SESSION['customer_id'])) {
+            unset(
+                $_SESSION['user_id'],
+                $_SESSION['username'],
+                $_SESSION['user_role'],
+                $_SESSION['last_activity'],
+                $_SESSION['customer_id'],
+                $_SESSION['customer_fullname'],
+                $_SESSION['customer_email'],
+                $_SESSION['customer_phone'],
+                $_SESSION['customer_cccd']
+            );
+
+            $_SESSION['auth_error'] = 'Tài khoản chưa có hồ sơ khách hàng. Vui lòng đăng nhập lại.';
+            redirect('/login');
+        }
+
         $data = [
             'title' => 'Đặt phòng',
-            'description' => 'Nhập thông tin khách hàng để gửi yêu cầu đặt phòng.',
+            'description' => 'Kiểm tra thông tin và gửi yêu cầu đặt phòng.',
             'view_content' => 'pages/booking/index',
             'page_style' => 'booking',
             'page_script' => 'booking',
@@ -68,8 +93,8 @@ class ClientBookingController extends Controller{
             ]);
         }
     }
-    // Nhận form đặt phòng, kiểm tra dữ liệu, tính tổng tiền và tạo booking.
-    public function process(){
+    // kiểm tra dữ liệu, tính tổng tiền và tạo booking.
+    public function process() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->json([
                 'success' => false,
@@ -77,30 +102,35 @@ class ClientBookingController extends Controller{
             ]);
         }
 
+        if (!isCustomerLoggedIn()) {
+            $this->json([
+                'success' => false,
+                'message' => 'Vui lòng đăng nhập để đặt phòng.',
+                'redirect_url' => URLROOT . '/login'
+            ]);
+        }
+
+        $customerId = (int)($_SESSION['customer_id'] ?? 0);
+        $userId = (int)($_SESSION['user_id'] ?? 0);
+
+        if ($customerId <= 0 || $userId <= 0) {
+            $this->json([
+                'success' => false,
+                'message' => 'Không tìm thấy hồ sơ khách hàng.'
+            ]);
+        }
+
         try {
             $roomTypeId = (int)($_POST['room-type-id'] ?? 0);
-            $fullname = trim($_POST['customer-fullname'] ?? '');
-            $phone = preg_replace('/[\s.\-]+/', '', trim($_POST['customer-phone'] ?? ''));
-            $email = trim($_POST['customer-email'] ?? '');
-            $cccd = preg_replace('/\s+/','', trim($_POST['customer-cccd'] ?? ''));
             $note = trim($_POST['booking-note'] ?? '');
 
-            [$checkin, $checkout] = $this->resolveDates(trim($_POST['booking-checkin'] ?? ''), trim($_POST['booking-checkout'] ?? ''));
-        
+            [$checkin, $checkout] = $this->resolveDates(
+                trim($_POST['booking-checkin'] ?? ''),
+                trim($_POST['booking-checkout'] ?? '')
+            );
+
             if ($roomTypeId <= 0) {
                 throw new InvalidArgumentException('Vui lòng chọn loại phòng.');
-            }
-            if ($fullname === '') {
-                throw new InvalidArgumentException('Vui lòng nhập họ tên khách hàng.');
-            }
-            if (!preg_match('/^0[0-9]{9}$/', $phone)) {
-                throw new InvalidArgumentException('Số điện thoại phải bắt đầu từ 0 và có 10 số ');
-            }
-            if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                throw new InvalidArgumentException('Email không hợp lệ.');
-            }
-            if (!preg_match('/^[0-9]{12}$/', $cccd)) {
-                throw new InvalidArgumentException('CCCD phải gồm đúng 12 chữ số.');
             }
 
             $roomsModel = $this->model('clientrooms');
@@ -121,12 +151,8 @@ class ClientBookingController extends Controller{
 
             $model = $this->model('clientbookings');
             $bookingId = $model->createBooking(
-                [
-                    'fullname' => $fullname,
-                    'phone' => $phone,
-                    'email' => $email,
-                    'cccd' => $cccd
-                ],
+                $customerId,
+                $userId,
                 [
                     'roomTypeId' => $roomTypeId,
                     'checkin' => $checkin,
@@ -138,10 +164,10 @@ class ClientBookingController extends Controller{
 
             $this->json([
                 'success' => true,
-                'message' => 'Đặt phòng thành công. Vui lòng lưu mã đơn để tra cứu.',
+                'message' => 'Đặt phòng thành công.',
                 'booking_id' => $bookingId,
-                'guest_phone' => $phone,
-                'total_price' => $totalPrice
+                'total_price' => $totalPrice,
+                'redirect_url' => URLROOT . '/my-account'
             ]);
         } catch (InvalidArgumentException $e) {
             $this->json([
@@ -149,9 +175,13 @@ class ClientBookingController extends Controller{
                 'message' => $e->getMessage()
             ]);
         } catch (RuntimeException $e) {
-            $message = $e->getMessage() === 'NO_AVAILABLE_ROOM'
-                ? 'Phòng vừa được khách khác đặt. Vui lòng chọn ngày hoặc loại phòng khác.'
-                : 'Không thể tạo đơn đặt phòng.';
+            if ($e->getMessage() === 'NO_AVAILABLE_ROOM') {
+                $message = 'Phòng vừa được khách khác đặt. Vui lòng chọn ngày hoặc loại phòng khác.';
+            } elseif ($e->getMessage() === 'INVALID_CUSTOMER') {
+                $message = 'Không tìm thấy hồ sơ khách hàng của tài khoản.';
+            } else {
+                $message = 'Không thể tạo đơn đặt phòng.';
+            }
 
             $this->json([
                 'success' => false,

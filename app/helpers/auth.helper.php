@@ -56,3 +56,15 @@ function requireRole($role) {
         exit();
     }
 }
+
+function isCustomerLoggedIn(): bool {
+    return !empty($_SESSION['user_id'])
+        && ($_SESSION['user_role'] ?? '') === 'Customer';
+}
+
+function redirect(string $path = '/'): void {
+    $url = URLROOT . '/' . ltrim($path, '/');
+
+    header('Location: ' . $url);
+    exit();
+}

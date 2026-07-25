@@ -1,14 +1,35 @@
 <?php
 
 class ClientbookingsModel extends Database {
-    public function createBooking(array $customer, array $booking): int {
+    public function createBooking(int $customerId, int $userId, array $booking): int {
         $db = $this->connect();
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         try {
-            // Bat dau thuc hien cac cau lenh sql the mot nhom, chi khi commit thi mmoi thay doi moi duoc luu vao database
             $db->beginTransaction();
-            $customerId = $this->findOrCreateCustomer($db, $customer);
+
+            $customerStmt = $db->prepare("
+            SELECT c.CUSTOMER_ID
+            FROM Customer c
+            INNER JOIN `User` u
+                ON c.CUSTOMER_USER_ID = u.USER_ID
+            WHERE c.CUSTOMER_ID = ?
+                AND c.CUSTOMER_USER_ID = ?
+                AND u.USER_ROLE = 'Customer'
+                AND u.USER_STATUS = 'Active'
+            LIMIT 1
+            FOR UPDATE
+            ");
+
+            $customerStmt->execute([
+                $customerId,
+                $userId
+            ]);
+
+            if (!$customerStmt->fetch(PDO::FETCH_ASSOC)) {
+                throw new RuntimeException('INVALID_CUSTOMER');
+            }
+
             $roomStmt = $db->prepare("
                 SELECT ROOM_ID
                 FROM Room
@@ -50,23 +71,23 @@ class ClientbookingsModel extends Database {
                     BOOKING_STATUS,
                     BOOKING_NOTE
                 ) VALUES (
-                    :customerId,
-                    :roomTypeId,
+                    :customer_id,
+                    :room_type_id,
                     NULL,
                     :checkin,
                     :checkout,
-                    :totalPrice,
+                    :total_price,
                     'Pending',
                     :note
                 )
             ");
 
             $insert->execute([
-                ':customerId' => $customerId,
-                ':roomTypeId' => $booking['roomTypeId'],
+                ':customer_id' => $customerId,
+                ':room_type_id' => $booking['roomTypeId'],
                 ':checkin' => $booking['checkin'],
                 ':checkout' => $booking['checkout'],
-                ':totalPrice' => $booking['totalPrice'],
+                ':total_price' => $booking['totalPrice'],
                 ':note' => $booking['note'] !== '' ? $booking['note'] : null
             ]);
 
@@ -79,61 +100,5 @@ class ClientbookingsModel extends Database {
             }
             throw $e;
         }
-    }
-
-    private function findOrCreateCustomer(PDO $db, array $customer): int {
-        $stmt = $db->prepare("
-            SELECT CUSTOMER_ID
-            FROM Customer
-            WHERE CUSTOMER_PHONE = ?
-            LIMIT 1
-            FOR UPDATE
-        ");
-        $stmt->execute([$customer['phone']]);
-        $record = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($record) {
-            $update = $db->prepare("
-                UPDATE Customer
-                SET CUSTOMER_FULLNAME = :fullname,
-                    CUSTOMER_EMAIL = :email,
-                    CUSTOMER_CCCD = :cccd
-                WHERE CUSTOMER_ID = :id
-            ");
-
-            $update->execute([
-                ':fullname' => $customer['fullname'],
-                ':email' => $customer['email'] !== ''
-                    ? $customer['email']
-                    : null,
-                ':cccd' => $customer['cccd'],
-                ':id' => (int)$record['CUSTOMER_ID']
-            ]);
-
-            return (int)$record['CUSTOMER_ID'];
-        }
-
-        $insert = $db->prepare("
-            INSERT INTO Customer (
-                CUSTOMER_FULLNAME,
-                CUSTOMER_PHONE,
-                CUSTOMER_EMAIL,
-                CUSTOMER_CCCD
-            ) VALUES (
-                :fullname,
-                :phone,
-                :email,
-                :cccd
-            )
-        ");
-
-        $insert->execute([ 
-            ':fullname' => $customer['fullname'],
-            ':phone' => $customer['phone'],
-            ':email' => $customer['email'] !== '' ? $customer['email'] : null,
-            ':cccd' => $customer['cccd']
-        ]);
-
-        return (int)$db->lastInsertId();
     }
 }

@@ -50,6 +50,7 @@
 
             <button type="submit" class="auth-submit">Đăng nhập</button>
         </form>
+        <p class="auth-switch">
             Chưa có tài khoản?
             <a href="<?php echo URLROOT; ?>/register">Đăng ký</a>
         </p>

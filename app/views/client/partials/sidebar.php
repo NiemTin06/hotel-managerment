@@ -33,16 +33,9 @@
             </a>
         </li>
 
-        <li class="nav-item">
-            <a href="<?php echo URLROOT; ?>/booking-lookup" class="nav-link d-flex align-items-center gap-3" title="Tra cứu đơn">
-                <i class="bi bi-search"></i>
-                <span class="link-text">Tra cứu đơn</span>
-            </a>
-        </li>
-
         <?php if (($_SESSION['user_role'] ?? null) === 'Customer'): ?>
             <li class="nav-item">
-                <a href="<?php echo URLROOT; ?>/dashboard" class="nav-link d-flex align-items-center gap-3" title="Tài khoản của tôi">
+                <a href="<?php echo URLROOT; ?>/my-account" class="nav-link d-flex align-items-center gap-3" title="Tài khoản của tôi">
                     <i class="bi bi-person-circle"></i>
                     <span class="link-text">Tài khoản của tôi</span>
                 </a>

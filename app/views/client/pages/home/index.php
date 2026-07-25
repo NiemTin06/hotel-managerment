@@ -8,7 +8,7 @@
         <div class="home-banner-content">
             <p class="home-welcome">CHÀO MỪNG ĐẾN VỚI</p>
 
-            <h1>HOTEL MANAGER</h1>
+            <h1>NEKO HOTEL</h1>
 
             <p>
                 Không gian nghỉ dưỡng thoải mái, tiện nghi và phù hợp
@@ -18,10 +18,6 @@
             <div class="home-banner-actions">
                 <a href="<?php echo URLROOT; ?>/rooms" class="btn btn-primary">
                     Xem các loại phòng
-                </a>
-
-                <a href="<?php echo URLROOT; ?>/booking-lookup" class="btn btn-outline-light">
-                    Tra cứu đơn
                 </a>
             </div>
         </div>
@@ -44,14 +40,14 @@
             <h2>Nơi nghỉ dưỡng dành cho bạn</h2>
 
             <p>
-                Hotel Manager mang đến không gian nghỉ ngơi thoải mái,
+                Neko Hotel mang đến không gian nghỉ ngơi thoải mái,
                 sạch sẽ và tiện nghi. Khách sạn có nhiều loại phòng phù hợp
                 với khách đi công tác, du lịch cá nhân hoặc gia đình.
             </p>
 
             <p>
                 Khách hàng có thể linh hoạt kiểm tra lịch để chọn phòng phù hợp nhu cầu, xem giá,
-                gửi yêu cầu đặt phòng và tra cứu đơn trực tiếp trên website.
+                gửi yêu cầu đặt phòng và theo dõi lịch sử trong tài khoản.
             </p>
 
             <div class="home-about-info">

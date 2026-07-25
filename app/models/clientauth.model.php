@@ -1,6 +1,7 @@
 <?php
 
 class ClientauthModel extends Database {
+
     public function getUserByUsernameOrEmail($userInput) {
         $sql = "SELECT * FROM `User`
                 WHERE USER_USERNAME = :user_input
@@ -12,7 +13,7 @@ class ClientauthModel extends Database {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
+    // kiểm tra dữ liệu đăng ký có bị trùng không
     public function getDuplicateCustomerField($username, $email, $phone) {
         $sql = "SELECT USER_USERNAME, USER_EMAIL, USER_PHONE
                 FROM `User`
@@ -63,11 +64,12 @@ class ClientauthModel extends Database {
 
         return null;
     }
-
+    // tao acc customer
     public function registerCustomerAccount(array $data) {
         $pdo = $this->connect();
 
         try {
+            // bat dau transaction de tranh loi ko dong bo
             $pdo->beginTransaction();
 
             $sql = "INSERT INTO `User`
@@ -76,27 +78,27 @@ class ClientauthModel extends Database {
                     (:username, :email, :password, :phone, 'Customer', 'Active')";
 
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([ 
+            $stmt->execute([
                 ':username' => $data['username'],
                 ':email' => $data['email'],
                 ':password' => $data['password_hash'],
                 ':phone' => $data['phone']
-                ]);
+            ]);
 
-             // Lấy ID tài khoản vừa tạo để liên kết với Customer.
             $userId = (int)$pdo->lastInsertId();
 
-            $sql = "INSERT INTO `Customer`
-                    (CUSTOMER_FULLNAME, CUSTOMER_PHONE, CUSTOMER_EMAIL)
+            $sql = "INSERT INTO `Customer` 
+                    (CUSTOMER_USER_ID, CUSTOMER_FULLNAME, CUSTOMER_PHONE, CUSTOMER_EMAIL) 
                     VALUES
-                    (:fullname, :phone, :email)";
+                    (:user_id, :fullname, :phone, :email)";
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
+                ':user_id' => $userId,
                 ':fullname' => $data['fullname'],
                 ':phone' => $data['phone'],
                 ':email' => $data['email']
-                ]);
+            ]);
 
             $pdo->commit();
             return true;
@@ -110,15 +112,13 @@ class ClientauthModel extends Database {
 
     public function getCustomerForUser(array $user) {
         $sql = "SELECT *
-        FROM `Customer`
-        WHERE CUSTOMER_USER_ID = :user_id
-        LIMIT 1";
+                FROM `Customer`
+                WHERE CUSTOMER_USER_ID = :user_id
+                LIMIT 1";
 
         $stmt = $this->connect()->prepare($sql);
         $stmt->execute([':user_id' => (int)$user['USER_ID']]);
         
         return $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        return false;
     }
 }

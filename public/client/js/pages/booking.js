@@ -222,24 +222,6 @@ form.addEventListener(
             return;
         }
 
-        const phoneInput = document.querySelector('#customer-phone');
-        const cccdInput = document.querySelector('#customer-cccd');
-
-        const phone = phoneInput.value.trim().replace(/[\s.\-]/g, '');
-        const cccd = cccdInput.value.trim();
-
-        if (!/^0[0-9]{9}$/.test(phone)) {
-            showMessage('Số điện thoại không hợp lệ.');
-            return;
-        }
-
-        if (!/^[0-9]{12}$/.test(cccd)) {
-            showMessage('CCCD phải gồm đúng 12 chữ số.');
-            return;
-        }
-
-        phoneInput.value = phone;
-        cccdInput.value = cccd;
         bookingButton.disabled = true;
 
         try {
@@ -249,21 +231,22 @@ form.addEventListener(
             );
 
             if (!result.success) {
+                if (result.redirect_url) {
+                    window.location.href = result.redirect_url;
+                    return;
+                }
+
                 showMessage(result.message);
                 return;
             }
 
-            const lookupParams = new URLSearchParams({
-                booking_id: result.booking_id,
-                phone: result.guest_phone
-            });
-
-            window.location.href = APP_URLROOT + '/booking-lookup?' + lookupParams.toString();
+            window.location.href =
+                result.redirect_url || APP_URLROOT + '/my-account';
         } catch (error) {
             showMessage(error.message);
         } finally {
             if (roomType) {
-                bookingButton.disabled = Number(roomType.AVAILABLE_ROOM_COUNT) <= 0;
+                bookingButton.disabled = Number(roomType.AVAILABLE_ROOM_COUNT) <= 0 || getNightCount() <= 0;
             }
         }
     }

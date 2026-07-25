@@ -2,7 +2,7 @@
 
 <div class="container-fluid room-page">
     <?php
-    $pageEyebrow = 'DANH SÁCH PHÒNG';
+    $pageEyebrow = 'XEM PHÒNG';
     require __DIR__ . '/../../components/page-heading.php';
     ?>
 
