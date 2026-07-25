@@ -83,6 +83,9 @@ class ClientauthModel extends Database {
                 ':phone' => $data['phone']
                 ]);
 
+             // Lấy ID tài khoản vừa tạo để liên kết với Customer.
+            $userId = (int)$pdo->lastInsertId();
+
             $sql = "INSERT INTO `Customer`
                     (CUSTOMER_FULLNAME, CUSTOMER_PHONE, CUSTOMER_EMAIL)
                     VALUES
@@ -106,24 +109,16 @@ class ClientauthModel extends Database {
     }
 
     public function getCustomerForUser(array $user) {
-        $phone = trim($user['USER_PHONE'] ?? '');
-        $email = trim($user['USER_EMAIL'] ?? '');
+        $sql = "SELECT *
+        FROM `Customer`
+        WHERE CUSTOMER_USER_ID = :user_id
+        LIMIT 1";
 
-        if ($phone !== '') {
-            $sql = "SELECT * FROM `Customer` WHERE CUSTOMER_PHONE = :phone LIMIT 1";
-            $stmt = $this->connect()->prepare($sql);
-            $stmt->execute([':phone' => $phone]);
-            $customer = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($customer) return $customer;
-        }
-
-        if ($email !== '') {
-            $sql = "SELECT * FROM `Customer` WHERE CUSTOMER_EMAIL = :email LIMIT 1";
-            $stmt = $this->connect()->prepare($sql);
-            $stmt->execute([':email' => $email]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
-        }
-
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->execute([':user_id' => (int)$user['USER_ID']]);
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+        
         return false;
     }
 }
