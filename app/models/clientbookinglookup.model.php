@@ -4,7 +4,6 @@ class ClientbookinglookupModel extends Database {
         $sql = "
             SELECT
                 b.BOOKING_ID,
-                b.BOOKING_DATE,
                 b.BOOKING_CHECKIN,
                 b.BOOKING_CHECKOUT,
                 b.BOOKING_TOTAL_PRICE,
