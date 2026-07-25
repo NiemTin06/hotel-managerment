@@ -1,79 +1,39 @@
 import { API } from '../api/api.js';
 import { escapeHtml, formatCurrency, getBedName } from '../helper/format.js';
 
-const roomList = document.querySelector(
-    '#client-room-type-list'
-);
+const roomList = document.querySelector('#client-room-type-list');
+const resultCount = document.querySelector('#room-result-count');
+const filterForm = document.querySelector('[filter-form]');
+const roomTypeSelect = document.querySelector('#room-type');
+const checkinInput = document.querySelector('#room-checkin');
+const checkoutInput = document.querySelector('#room-checkout');
+const sortSelect = document.querySelector('#sort-by');
+const message = document.querySelector('#room-filter-message');
 
-const resultCount = document.querySelector(
-    '#room-result-count'
-);
-
-const filterForm = document.querySelector(
-    '[filter-form]'
-);
-
-const roomTypeSelect = document.querySelector(
-    '#room-type'
-);
-
-const checkinInput = document.querySelector(
-    '#room-checkin'
-);
-
-const checkoutInput = document.querySelector(
-    '#room-checkout'
-);
-
-const sortSelect = document.querySelector(
-    '#sort-by'
-);
-
-const message = document.querySelector(
-    '#room-filter-message'
-);
-
-const urlParams = new URLSearchParams(
-    window.location.search
-);
+const urlParams = new URLSearchParams(window.location.search);
 
 let checkin = urlParams.get('checkin') || '';
 let checkout = urlParams.get('checkout') || '';
-let selectedRoomTypeId =
-    urlParams.get('room-type') || '';
-let selectedSort =
-    urlParams.get('sort-by') || '';
-
-let checkedDate =
-    checkin !== '' && checkout !== '';
-
+let selectedRoomTypeId = urlParams.get('room-type') || '';
+let selectedSort = urlParams.get('sort-by') || '';
+let checkedDate = checkin !== '' && checkout !== '';
 let loadedRoomTypeOptions = false;
 let currentRoomTypes = [];
 
 function getToday() {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(
-        today.getMonth() + 1
-    ).padStart(2, '0');
-    const day = String(
-        today.getDate()
-    ).padStart(2, '0');
-
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
     return year + '-' + month + '-' + day;
 }
 
 function loadRoomTypeOptions(roomTypes) {
-    if (loadedRoomTypeOptions) {
-        return;
-    }
-
+    if (loadedRoomTypeOptions) return;
     roomTypes.forEach(function (roomType) {
         const option = document.createElement('option');
-
         option.value = roomType.ROOMTYPE_ID;
         option.textContent = roomType.ROOMTYPE_NAME;
-
         roomTypeSelect.appendChild(option);
     });
 
@@ -88,19 +48,14 @@ function showRoomTypes(roomTypes) {
     let availableTypeCount = 0;
 
     roomTypes.forEach(function (roomType) {
-        const roomCount = Number(
-            roomType.AVAILABLE_ROOM_COUNT || 0
-        );
+        const roomCount = Number(roomType.AVAILABLE_ROOM_COUNT || 0);
 
-        const canBook =
-            checkedDate && roomCount > 0;
-
+        const canBook = checkedDate && roomCount > 0;
         if (canBook) {
             availableTypeCount++;
         }
-
         let image = `
-            <div class="client-room-image no-image">
+            <div class="room-image room-image-empty">
                 Chưa có ảnh
             </div>
         `;
@@ -108,7 +63,7 @@ function showRoomTypes(roomTypes) {
         if (roomType.ROOMTYPE_THUMBNAIL) {
             image = `
                 <img
-                    class="client-room-image"
+                    class="room-image"
                     src="${APP_URLROOT}/public/uploads/roomtypes/${encodeURIComponent(roomType.ROOMTYPE_THUMBNAIL)}"
                     alt="${escapeHtml(roomType.ROOMTYPE_NAME)}"
                 >
@@ -116,11 +71,8 @@ function showRoomTypes(roomTypes) {
         }
 
         let oldPrice = '';
-
         if (
-            Number(
-                roomType.ROOMTYPE_DISCOUNT_PERCENTAGE
-            ) > 0
+            Number(roomType.ROOMTYPE_DISCOUNT_PERCENTAGE) > 0
         ) {
             oldPrice = `
                 <span class="old-price">
@@ -130,80 +82,69 @@ function showRoomTypes(roomTypes) {
         }
 
         let roomStatus = 'Chọn ngày để kiểm tra';
-        let statusClass = 'not-checked';
+        let statusClass = 'text-bg-light';
 
         if (checkedDate && roomCount > 0) {
             roomStatus = `Còn ${roomCount} phòng`;
-            statusClass = '';
+            statusClass = 'text-bg-success';
         }
 
         if (checkedDate && roomCount <= 0) {
             roomStatus = 'Hết phòng';
-            statusClass = 'is-empty';
+            statusClass = 'text-bg-danger';
         }
 
         html += `
             <div class="col-12 col-md-6 col-lg-4">
-                <article class="client-room-card">
-                    <div class="room-image-box">
+                <article class="card room-type-card h-100 overflow-hidden">
+                    <div class="position-relative room-image-box">
                         ${image}
-
-                        <span class="room-card-status ${statusClass}">
+                        <span class="badge position-absolute top-0 end-0 m-2 ${statusClass}">
                             ${roomStatus}
                         </span>
                     </div>
 
-                    <div class="client-room-body">
-                        <h2>
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="h5">
                             ${escapeHtml(roomType.ROOMTYPE_NAME)}
                         </h2>
 
-                        <div class="room-info-box">
-                            <p>
+                        <div class="small bg-light border rounded p-2 mb-2">
+                            <p class="mb-1">
                                 <strong>Sức chứa:</strong>
-                                Tối đa
-                                ${Number(roomType.ROOMTYPE_MAX_GUESTS)}
-                                khách
+                                Tối đa ${Number(roomType.ROOMTYPE_MAX_GUESTS)} khách
                             </p>
 
-                            <p>
+                            <p class="mb-1">
                                 <strong>Loại giường:</strong>
                                 ${
-                                    escapeHtml(
-                                        getBedName(
-                                            roomType.ROOMTYPE_BED_TYPE
-                                        )
-                                    )
+                                    escapeHtml(getBedName(roomType.ROOMTYPE_BED_TYPE))
                                 }
                             </p>
 
-                            <p>
+                            <p class="mb-0">
                                 <strong>Khuyến mãi:</strong>
                                 ${
-                                    Number(
-                                        roomType
-                                            .ROOMTYPE_DISCOUNT_PERCENTAGE
-                                    )
+                                    Number(roomType.ROOMTYPE_DISCOUNT_PERCENTAGE)
                                 }%
                             </p>
                         </div>
 
-                        <p class="room-description">
+                        <p class="small text-muted room-card-description">
                             ${
                                 escapeHtml(
-                                    roomType.ROOMTYPE_DESCRIPTION
-                                    || 'Loại phòng chưa có mô tả.'
+                                    roomType.ROOMTYPE_DESCRIPTION || 'Loại phòng chưa có mô tả.'
                                 )
                             }
                         </p>
 
-                        <div class="room-price-box">
-                            <div class="room-original-price">
+                        <div class="d-flex justify-content-between align-items-end mt-auto pt-2 mb-3 border-top">
+                            <div>
                                 ${oldPrice}
                             </div>
 
-                            <div class="room-sale-price">
-                                <strong>
+                            <div class="text-danger text-end">
+                                <strong class="h5">
                                     ${formatCurrency(roomType.PRICE_AFTER_DISCOUNT)}
                                 </strong>
 
@@ -213,14 +154,12 @@ function showRoomTypes(roomTypes) {
 
                         <button
                             type="button"
-                            class="btn btn-success btn-select-room-type"
+                            class="btn btn-success w-100 btn-select-room-type"
                             data-id="${roomType.ROOMTYPE_ID}"
                             ${canBook ? '' : 'disabled'}
                         >
                             ${
-                                canBook
-                                    ? 'Đặt loại phòng này'
-                                    : 'Chưa thể đặt'
+                                canBook ? 'Đặt loại phòng này' : 'Chưa thể đặt'
                             }
                         </button>
                     </div>
@@ -242,11 +181,9 @@ function showRoomTypes(roomTypes) {
     roomList.innerHTML = html;
 
     if (checkedDate) {
-        resultCount.textContent =
-            availableTypeCount + ' loại phòng còn trống';
+        resultCount.textContent = availableTypeCount + ' loại phòng còn trống';
     } else {
-        resultCount.textContent =
-            roomTypes.length + ' loại phòng phù hợp';
+        resultCount.textContent = roomTypes.length + ' loại phòng phù hợp';
     }
 }
 
@@ -273,11 +210,8 @@ async function loadRoomTypes() {
 
         if (!result.success) {
             checkedDate = false;
-
             message.textContent = result.message;
-            message.className =
-                'room-filter-message text-danger';
-
+            message.className = 'room-filter-message text-danger';
             return;
         }
 
@@ -288,18 +222,15 @@ async function loadRoomTypes() {
         showRoomTypes(result.room_types || []);
 
         if (checkedDate) {
-            message.textContent =
-                'Đã kiểm tra phòng trống.';
+            message.textContent = 'Đã kiểm tra phòng trống.';
 
-            message.className =
-                'room-filter-message text-success';
+            message.className = 'room-filter-message text-success';
         }
     } catch (error) {
         checkedDate = false;
 
         message.textContent = error.message;
-        message.className =
-            'room-filter-message text-danger';
+        message.className = 'room-filter-message text-danger';
     }
 }
 
@@ -319,29 +250,21 @@ filterForm.addEventListener(
         const newCheckin = checkinInput.value;
         const newCheckout = checkoutInput.value;
 
-        if (
-            newCheckin === ''
+        if (newCheckin === ''
             || newCheckout === ''
             || newCheckin < getToday()
             || newCheckout <= newCheckin
         ) {
             event.preventDefault();
-
-            message.textContent =
-                'Vui lòng chọn ngày nhận và ngày trả hợp lệ.';
-
-            message.className =
-                'room-filter-message text-danger';
+            message.textContent = 'Vui lòng chọn ngày nhận và ngày trả hợp lệ.';
+            message.className = 'room-filter-message text-danger';
         }
     }
 );
 
 function markFilterChanged() {
     checkedDate = false;
-
-    message.textContent =
-        'Bấm Tìm phòng để kiểm tra lại phòng trống.';
-
+    message.textContent = 'Bấm Tìm phòng để kiểm tra lại phòng trống.';
     message.className = 'room-filter-message';
 
     if (currentRoomTypes.length > 0) {
@@ -349,41 +272,22 @@ function markFilterChanged() {
     }
 }
 
-checkinInput.addEventListener(
-    'change',
-    function () {
-        checkoutInput.min =
-            checkinInput.value || getToday();
-
+checkinInput.addEventListener('change', function () {
+        checkoutInput.min = checkinInput.value || getToday();
         markFilterChanged();
     }
 );
 
-checkoutInput.addEventListener(
-    'change',
-    markFilterChanged
-);
+checkoutInput.addEventListener('change', markFilterChanged);
 
-roomTypeSelect.addEventListener(
-    'change',
-    markFilterChanged
-);
+roomTypeSelect.addEventListener('change', markFilterChanged);
 
-sortSelect.addEventListener(
-    'change',
-    markFilterChanged
-);
+sortSelect.addEventListener('change', markFilterChanged);
 
-roomList.addEventListener(
-    'click',
-    function (event) {
-        const button = event.target.closest(
-            '.btn-select-room-type'
-        );
+roomList.addEventListener('click', function (event) {
+        const button = event.target.closest('.btn-select-room-type');
 
-        if (!button || !checkedDate) {
-            return;
-        }
+        if (!button || !checkedDate) return;
 
         const params = new URLSearchParams({
             room_type_id: button.dataset.id,
@@ -391,10 +295,7 @@ roomList.addEventListener(
             checkout: checkout
         });
 
-        window.location.href =
-            APP_URLROOT
-            + '/bookings?'
-            + params.toString();
+        window.location.href = APP_URLROOT + '/bookings?' + params.toString();
     }
 );
 

@@ -12,78 +12,113 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
+  min-height: 62px;
+  padding: 10px 20px;
+  color: #ffffff;
   background: linear-gradient(180deg, #4f46e5, #5b6cff);
-  color: #ffffff;
-}
-
-.client-logo a,
-.client-nav a {
-  color: #ffffff;
-  text-decoration: none;
 }
 
 .client-logo a {
+  color: #ffffff;
+  font-size: 18px;
   font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.5px;
 }
 
 .client-nav {
   display: flex;
+  align-items: center;
   gap: 15px;
+  margin-left: auto;
 }
 
-.client-nav a:hover {
-  color: #cccccc;
+.client-nav > a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.client-nav > a:hover {
+  color: #dddddd;
+}
+
+.client-user-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .inner-wrap {
   display: flex;
 }
 
+/* Sidebar cấu trúc Flexbox */
 .sidebar {
   width: 250px;
-  min-height: 100vh;
-  background-color: rgb(86, 86, 231);
-  color: #ffd700;
-}
-
-.sidebar h2 {
-  padding: 10px;
-  font-size: 1.5rem;
-}
-.sidebar ul li a {
-  display: block;
-  color: white;
-  text-decoration: none;
-  padding: 12px 16px;
-  transition: all 0.2s ease;
-}
-
-.sidebar ul li a:hover {
-  background: white;
-  color: #343a40;
-}
-.sidebar ul li {
-  list-style-type: none;
-  padding: 0;
-}
-.sidebar ul {
+  min-width: 250px;
   padding: 0;
   margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  background-color: rgb(86, 86, 231);
+  transition: all 0.3s ease;
 }
 
+.sidebar-menu-text {
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* CSS khi thu nhỏ Sidebar */
+.sidebar.collapsed {
+  width: 65px;
+  min-width: 65px;
+}
+
+.sidebar.collapsed .nav-link i {
+  width: 100%;
+  text-align: center;
+}
+
+.sidebar.collapsed .link-text {
+  display: none;
+}
+
+.sidebar.collapsed #sidebar-toggle {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Khối nội dung chính tự dạt sang bên */
 .content {
   flex: 1;
   padding: 20px;
-  background: #f5f5f5;
+  overflow-x: auto;
+}
+
+.sidebar ul li a {
+  padding: 10px;
+  margin: 0;
+  color: white;
+}
+
+.sidebar ul li a:hover {
+  color: black;
+  background-color: white;
 }
 
 .client-footer {
   padding: 20px;
-  background: linear-gradient(180deg, #4f46e5, #5b6cff);
   color: #bbbbbb;
   text-align: center;
   font-weight: bold;
+  background: linear-gradient(180deg, #4f46e5, #5b6cff);
 }
 
 .client-footer p {
@@ -92,29 +127,79 @@ body {
 
 @media (max-width: 767px) {
   .client-header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 55px;
+    padding: 12px 15px;
+  }
+
+  .client-nav {
+    display: flex;
+    align-items: center;
+    width: auto;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .client-user-text,
+  .client-logout-text,
+  .client-login-text,
+  .client-register-text {
+    display: none;
+  }
+
+  .client-nav i {
+    font-size: 18px;
+  }
+
+  .client-nav .btn {
+    padding: 4px 7px;
   }
 
   .inner-wrap {
     display: block;
   }
 
-  .sidebar {
+  .sidebar,
+  .sidebar.collapsed {
     width: 100%;
+    min-width: 100%;
     min-height: auto;
   }
 
-  .content {
-    padding: 12px;
+  .sidebar .link-text,
+  .sidebar.collapsed .link-text {
+    display: inline;
   }
-}
 
-.client-user-name {
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
+  .sidebar .nav-link,
+  .sidebar.collapsed .nav-link {
+    justify-content: flex-start;
+  }
+
+  .sidebar .nav-link i,
+  .sidebar.collapsed .nav-link i {
+    width: 24px;
+    text-align: center;
+  }
+
+  .sidebar #sidebar-toggle,
+  .sidebar.collapsed #sidebar-toggle {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+
+  .content {
+    width: 100%;
+    padding: 12px;
+    overflow-x: hidden;
+  }
+
+  .room-image-box,
+  .home-room-image-box {
+    height: 210px;
+  }
 }
 
 /* Tiêu đề dùng chung cho Room, Booking, Booking History */
@@ -159,6 +244,191 @@ body {
 }
 
 .sidebar ul li a.active {
-  background: white;
   color: #343a40;
+  background: white;
+}
+
+/* Thẻ loại phòng dùng chung cho Home và Rooms */
+.client-room-card,
+.home-room-card,
+.room-type-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 7px;
+}
+
+.room-image-box,
+.home-room-image-box {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 165px;
+  overflow: hidden;
+  background: #eeeeee;
+}
+
+.client-room-image,
+.home-room-image,
+.room-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.no-image,
+.home-room-no-image,
+.room-image-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #666666;
+  font-size: 14px;
+}
+
+.room-card-status {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  padding: 5px 9px;
+  color: #087443;
+  background: rgba(226, 255, 240, 0.95);
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.room-card-status.is-empty {
+  color: #842029;
+  background: rgba(248, 215, 218, 0.96);
+}
+
+.room-card-status.not-checked {
+  color: #495057;
+  background: rgba(248, 249, 250, 0.96);
+}
+
+.client-room-body,
+.home-room-body,
+.room-type-card .card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 12px 14px 14px;
+}
+
+.client-room-body h2,
+.home-room-body h3,
+.room-type-card h2 {
+  margin: 0 0 8px;
+  color: #222222;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.room-info-box {
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: #f7f7f7;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+}
+
+.room-info-box p {
+  display: block;
+  width: 100%;
+  margin: 0 0 4px;
+  color: #555555;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.room-info-box p:last-child {
+  margin-bottom: 0;
+}
+
+.room-info-box strong {
+  color: #222222;
+}
+
+.home-room-short-info {
+  margin: 0 0 11px;
+  color: #555555;
+  font-size: 12px;
+}
+
+.room-description,
+.home-room-description,
+.room-card-description {
+  display: -webkit-box;
+  min-height: 39px;
+  max-height: 40px;
+  margin: 0 0 8px;
+  overflow: hidden;
+  color: #666666;
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.room-price-box,
+.home-room-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding-top: 8px;
+  margin-top: auto;
+  margin-bottom: 9px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.old-price,
+.home-room-old-price {
+  color: #777777;
+  font-size: 11px;
+  text-decoration: line-through;
+  white-space: nowrap;
+}
+
+.room-sale-price {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 3px;
+  margin-left: auto;
+  text-align: right;
+}
+
+.room-sale-price strong,
+.home-room-new-price {
+  color: #dc3545;
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.room-sale-price small,
+.home-room-new-price small {
+  color: #777777;
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.btn-select-room-type {
+  width: 100%;
+  min-height: 34px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
 }

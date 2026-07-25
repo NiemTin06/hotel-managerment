@@ -70,6 +70,22 @@ function showSelectedRoom() {
     totalText.textContent = nightCount > 0 ? formatCurrency(total) : '';
 
     let oldPrice = '';
+    let image = `
+        <div class="selected-room-no-image">
+            <i class="bi bi-image"></i>
+            <span>Chưa có ảnh</span>
+        </div>
+    `;
+
+    if (roomType.ROOMTYPE_THUMBNAIL) {
+        image = `
+            <img
+                class="selected-room-image"
+                src="${APP_URLROOT}/public/uploads/roomtypes/${encodeURIComponent(roomType.ROOMTYPE_THUMBNAIL)}"
+                alt="${escapeHtml(roomType.ROOMTYPE_NAME)}"
+            >
+        `;
+    }
 
     if (discount > 0) {
         oldPrice = `
@@ -81,6 +97,10 @@ function showSelectedRoom() {
 
     selectedRoom.innerHTML = `
         <article class="selected-room-card">
+            <div class="selected-room-image-box">
+                ${image}
+            </div>
+
             <div class="selected-room-main">
                 <div class="selected-room-heading">
                     <div>
@@ -107,9 +127,7 @@ function showSelectedRoom() {
                     <div>
                         <span>Sức chứa</span>
                         <strong>
-                            Tối đa
-                            ${Number(roomType.ROOMTYPE_MAX_GUESTS || 0)}
-                            khách
+                            Tối đa ${Number(roomType.ROOMTYPE_MAX_GUESTS || 0)} khách
                         </strong>
                     </div>
 

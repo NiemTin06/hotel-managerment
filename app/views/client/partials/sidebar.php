@@ -1,23 +1,67 @@
-<?php $currentLink = $data['link'] ?? ''; ?>
+<!-- app/views/client/partials/sidebar.php -->
+<aside id="main-sidebar" class="sidebar collapsed text-white d-flex flex-column">
 
-<div class="sidebar">
-    <h2>Menu</h2>
+    <!-- Nút đóng/mở sidebar -->
+    <div class="d-flex align-items-center justify-content-center mb-3">
+        <button id="sidebar-toggle" type="button" class="btn btn-outline-light btn-sm border-0" title="Đóng/mở menu">
+                <span class="fs-4">☰</span>
+                <span class="link-text sidebar-menu-text">Menu</span>
+        </button>
+    </div>
 
-    <ul>
-        <li>
-            <a href="<?php echo URLROOT; ?>/" class="<?php echo $currentLink === 'home' ? 'active' : ''; ?>">Trang chủ</a>
+    <hr class="text-secondary mt-0">
+
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+            <a href="<?php echo URLROOT; ?>/" class="nav-link d-flex align-items-center gap-3" title="Trang chủ">
+                <i class="bi bi-house-door"></i>
+                <span class="link-text">Trang chủ</span>
+            </a>
         </li>
 
-        <li>
-            <a href="<?php echo URLROOT; ?>/rooms" class="<?php echo $currentLink === 'rooms' ? 'active' : ''; ?>">Danh sách phòng</a>
+        <li class="nav-item">
+            <a href="<?php echo URLROOT; ?>/rooms" class="nav-link d-flex align-items-center gap-3" title="Xem phòng">
+                <i class="bi bi-door-closed"></i>
+                <span class="link-text">Xem phòng</span>
+            </a>
         </li>
 
-        <li>
-            <a href="<?php echo URLROOT; ?>/bookings" class="<?php echo $currentLink === 'bookings' ? 'active' : ''; ?>">Đặt phòng</a>
+        <li class="nav-item">
+            <a href="<?php echo URLROOT; ?>/bookings" class="nav-link d-flex align-items-center gap-3" title="Đặt phòng">
+                <i class="bi bi-calendar-check"></i>
+                <span class="link-text">Đặt phòng</span>
+            </a>
         </li>
 
-        <li>
-            <a href="<?php echo URLROOT; ?>/booking-lookup" class="<?php echo $currentLink === 'booking-lookup' ? 'active' : ''; ?>">Tra cứu đơn</a>
+        <li class="nav-item">
+            <a href="<?php echo URLROOT; ?>/booking-lookup" class="nav-link d-flex align-items-center gap-3" title="Tra cứu đơn">
+                <i class="bi bi-search"></i>
+                <span class="link-text">Tra cứu đơn</span>
+            </a>
         </li>
+
+        <?php if (($_SESSION['user_role'] ?? null) === 'Customer'): ?>
+            <li class="nav-item">
+                <a href="<?php echo URLROOT; ?>/dashboard" class="nav-link d-flex align-items-center gap-3" title="Tài khoản của tôi">
+                    <i class="bi bi-person-circle"></i>
+                    <span class="link-text">Tài khoản của tôi</span>
+                </a>
+            </li>
+        <?php endif; ?>
     </ul>
-</div>
+</aside>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleButton = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('main-sidebar');
+
+    if (!toggleButton || !sidebar) {
+        return;
+    }
+
+    toggleButton.addEventListener('click', function () {
+        sidebar.classList.toggle('collapsed');
+    });
+});
+</script>

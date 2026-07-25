@@ -1,14 +1,12 @@
 <?php /** @var array $data */ ?>
 
 <div class="container-fluid room-page">
-    <div class="room-page-title">
-        <div>
-            <h1><?php echo htmlspecialchars($data['title']); ?></h1>
-            <p><?php echo htmlspecialchars($data['description']); ?></p>
-        </div>
-    </div>
+    <?php
+    $pageEyebrow = 'DANH SÁCH PHÒNG';
+    require __DIR__ . '/../../components/page-heading.php';
+    ?>
 
-    <?php require_once __DIR__ . '/../../components/filter.php'; ?>
+    <?php require __DIR__ . '/../../components/filter.php'; ?>
 
     <div class="room-result-bar">
         <span id="room-result-count">
@@ -16,5 +14,9 @@
         </span>
     </div>
 
-    <div id="client-room-type-list" class="row g-4"></div>
+    <div id="client-room-type-list" class="row g-4">
+        <div class="col-12">
+            <div class="alert alert-secondary text-center">Đang tải các loại phòng...</div>
+        </div>
+    </div>
 </div>

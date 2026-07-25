@@ -11,21 +11,6 @@
     border-radius: 8px;
 }
 
-.lookup-panel-heading {
-    margin-bottom: 13px;
-}
-
-.lookup-panel-heading h2 {
-    margin: 0 0 3px;
-    font-size: 19px;
-}
-
-.lookup-panel-heading p {
-    margin: 0;
-    color: #666666;
-    font-size: 13px;
-}
-
 .booking-search-bar {
     display: grid;
     grid-template-columns:
