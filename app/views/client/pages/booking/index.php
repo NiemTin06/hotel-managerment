@@ -37,8 +37,7 @@ $customer = $data['customer'] ?? [];
             ?>
 
             <p class="guest-note">
-                Họ tên, số điện thoại và email không thể thay đổi trong lúc đặt phòng.
-                Muốn chỉnh sửa thông tin, vui lòng liên hệ quản trị viên.
+                Lưu ý: Muốn chỉnh sửa thông tin liên lạc, vui lòng cập nhật thông tin tài khoản.
             </p>
 
             <div class="booking-inline-field">

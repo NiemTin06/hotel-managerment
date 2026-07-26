@@ -86,7 +86,7 @@ class ClientLoginController extends Controller {
         $fullname = trim($_POST['fullname'] ?? '');
         $username = trim($_POST['username'] ?? '');
         $email = strtolower(trim($_POST['email'] ?? ''));
-        $phone = preg_replace('/[\s.\-]+/', '', trim($_POST['phone'] ?? ''));
+        $phone = trim($_POST['phone'] ?? '');
         $password = $_POST['password'] ?? '';
         $passwordConfirm = $_POST['password_confirm'] ?? '';
         // lưu thông tin cũ khi đăng ký lỗi
@@ -99,6 +99,16 @@ class ClientLoginController extends Controller {
         // thông báo lỗi
         if ($fullname === '' || $username === '' || $email === '' || $phone === '' || $password === '' || $passwordConfirm === '') {
             $this->errorMessage('/register', 'Vui lòng nhập đầy đủ thông tin.', $old);
+        }
+
+        $fnameLength = mb_strlen($fullname, 'UTF-8');
+
+        if ($fnameLength <= 4) {
+            $this->errorMessage('/register', 'Họ và tên phải có nhiều hơn 4 ký tự.', $old);
+        }
+
+        if ($fnameLength > 100) {
+            $this->errorMessage('/register', 'Họ và tên không được vượt quá 100 ký tự.', $old);
         }
 
         if (!preg_match('/^[A-Za-z0-9_]{4,50}$/', $username)) {

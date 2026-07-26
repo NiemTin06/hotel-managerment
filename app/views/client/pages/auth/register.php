@@ -23,7 +23,6 @@
                     type="text"
                     name="fullname"
                     value="<?php echo htmlspecialchars($data['old']['fullname'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                    maxlength="100"
                     autocomplete="name"
                     placeholder="Họ và tên"
                     required
@@ -37,8 +36,6 @@
                     type="text"
                     name="username"
                     value="<?php echo htmlspecialchars($data['old']['username'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                    minlength="4"
-                    maxlength="50"
                     autocomplete="username"
                     placeholder="Tên tài khoản"
                     required
@@ -52,7 +49,6 @@
                     type="email"
                     name="email"
                     value="<?php echo htmlspecialchars($data['old']['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                    maxlength="100"
                     autocomplete="email"
                     placeholder="Email"
                     required
@@ -67,8 +63,6 @@
                     name="phone"
                     value="<?php echo htmlspecialchars($data['old']['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                     inputmode="numeric"
-                    pattern="0[0-9]{9}"
-                    maxlength="10"
                     autocomplete="tel"
                     placeholder="Số điện thoại"
                     required
@@ -81,7 +75,6 @@
                 <input
                     type="password"
                     name="password"
-                    minlength="6"
                     autocomplete="new-password"
                     placeholder="Mật khẩu"
                     required
@@ -94,7 +87,6 @@
                 <input
                     type="password"
                     name="password_confirm"
-                    minlength="6"
                     autocomplete="new-password"
                     placeholder="Xác nhận mật khẩu"
                     required

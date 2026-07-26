@@ -4,7 +4,7 @@
     </div>
 
     <div class="card-body py-2">
-        <form class="row g-2 align-items-end" method="get" action="<?php echo URLROOT; ?>/rooms" filter-form>
+        <form class="row g-2 align-items-end" method="get" action="<?php echo URLROOT; ?>/rooms">
             <div class="col-md-6 col-lg">
                 <label for="room-type" class="form-label small mb-1">Loại phòng</label>
                 <select id="room-type" name="room-type" class="form-select form-select-sm">

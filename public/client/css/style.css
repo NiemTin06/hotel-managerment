@@ -432,3 +432,16 @@ body {
   font-size: 12px;
   font-weight: 500;
 }
+
+/* readonly input */
+.form-control[readonly] {
+    background-color: #f1f3f5;
+    cursor: not-allowed;
+    user-select: text;
+}
+
+.form-control[readonly]:focus {
+    border-color: #ced4da;
+    box-shadow: none;
+    outline: none;
+}

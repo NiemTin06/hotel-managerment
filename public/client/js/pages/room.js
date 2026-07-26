@@ -3,7 +3,6 @@ import { escapeHtml, formatCurrency, getBedName } from '../helper/format.js';
 
 const roomList = document.querySelector('#client-room-type-list');
 const resultCount = document.querySelector('#room-result-count');
-const filterForm = document.querySelector('[filter-form]');
 const roomTypeSelect = document.querySelector('#room-type');
 const checkinInput = document.querySelector('#room-checkin');
 const checkoutInput = document.querySelector('#room-checkout');
@@ -19,14 +18,6 @@ let selectedSort = urlParams.get('sort-by') || '';
 let checkedDate = checkin !== '' && checkout !== '';
 let loadedRoomTypeOptions = false;
 let currentRoomTypes = [];
-
-function getToday() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return year + '-' + month + '-' + day;
-}
 
 function loadRoomTypeOptions(roomTypes) {
     if (loadedRoomTypeOptions) return;
@@ -198,8 +189,11 @@ async function loadRoomTypes() {
         params.set('sort-by', selectedSort);
     }
 
-    if (checkedDate) {
+    if (checkin !== '') {
         params.set('checkin', checkin);
+    }
+
+    if (checkout !== '') {
         params.set('checkout', checkout);
     }
 
@@ -239,28 +233,7 @@ function fillFilterFromUrl() {
     checkinInput.value = checkin;
     checkoutInput.value = checkout;
     sortSelect.value = selectedSort;
-
-    checkinInput.min = getToday();
-    checkoutInput.min = checkin || getToday();
 }
-
-filterForm.addEventListener(
-    'submit',
-    function (event) {
-        const newCheckin = checkinInput.value;
-        const newCheckout = checkoutInput.value;
-
-        if (newCheckin === ''
-            || newCheckout === ''
-            || newCheckin < getToday()
-            || newCheckout <= newCheckin
-        ) {
-            event.preventDefault();
-            message.textContent = 'Vui lòng chọn ngày nhận và ngày trả hợp lệ.';
-            message.className = 'room-filter-message text-danger';
-        }
-    }
-);
 
 function markFilterChanged() {
     checkedDate = false;
@@ -273,7 +246,6 @@ function markFilterChanged() {
 }
 
 checkinInput.addEventListener('change', function () {
-        checkoutInput.min = checkinInput.value || getToday();
         markFilterChanged();
     }
 );

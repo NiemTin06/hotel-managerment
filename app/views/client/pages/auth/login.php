@@ -29,7 +29,6 @@
                     type="text"
                     name="userInput"
                     value="<?php echo htmlspecialchars($data['old']['userInput'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                    maxlength="100"
                     autocomplete="username"
                     placeholder="Tên tài khoản hoặc email"
                     required

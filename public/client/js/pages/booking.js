@@ -171,9 +171,7 @@ async function loadBooking(roomTypeId = '') {
     clearMessage();
 
     try {
-        const data = await API.get(
-            'bookings/data?' + params.toString()
-        );
+        const data = await API.get('bookings/data?' + params.toString());
 
         if (!data.success) {
             showMessage(data.message);
@@ -198,37 +196,25 @@ async function loadBooking(roomTypeId = '') {
     }
 }
 
-const urlParams = new URLSearchParams(
-    window.location.search
-);
+const urlParams = new URLSearchParams(window.location.search);
 
 checkin = urlParams.get('checkin') || '';
 checkout = urlParams.get('checkout') || '';
 
 loadBooking(urlParams.get('room_type_id') || '');
 
-form.addEventListener(
-    'submit',
-    async function (event) {
+form.addEventListener('submit', async function (event) {
         event.preventDefault();
         clearMessage();
-
         if (!roomType) {
             showMessage('Vui lòng quay lại danh sách phòng để chọn loại phòng.');
-            return;
-        }
-
-        if (!form.reportValidity()) {
             return;
         }
 
         bookingButton.disabled = true;
 
         try {
-            const result = await API.post(
-                'bookings/process',
-                new FormData(form)
-            );
+            const result = await API.post('bookings/process', new FormData(form));
 
             if (!result.success) {
                 if (result.redirect_url) {
@@ -240,8 +226,7 @@ form.addEventListener(
                 return;
             }
 
-            window.location.href =
-                result.redirect_url || APP_URLROOT + '/my-account';
+            window.location.href = result.redirect_url || APP_URLROOT + '/my-account';
         } catch (error) {
             showMessage(error.message);
         } finally {
