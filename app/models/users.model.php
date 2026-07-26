@@ -155,4 +155,22 @@ class UsersModel extends Database {
         }
         return $stmt->execute();
     }
+
+    public function updateUserStatus(array $ids, string $newStatus){
+        if (empty($ids) || empty($newStatus)) {
+            return false;
+        }
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $sql = "UPDATE `User`
+                SET `USER_STATUS` = ?
+                WHERE `USER_ID` IN ($placeholders)";
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->bindValue(1, $newStatus, PDO::PARAM_STR);
+        // Bind từng id
+        foreach ($ids as $index => $id) {
+            $stmt->bindValue($index + 2, $id, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
 }

@@ -81,7 +81,25 @@ public function getUserData() {
         echo json_encode($user);
         exit();
     }
+ public function changeMulti(){
+        $input = json_decode(file_get_contents('php://input'), true) ?? [];
+        $ids = $input['ids'] ?? '';
+        $status = $input['status'] ?? '';
 
+        if (!empty($ids) && !empty($status)) {
+            $idsArray = explode(',', $ids);
+            $userModel = $this->model('users');
+            $result = $userModel->updateUserStatus($idsArray, $status);
+            if ($result) {
+                echo json_encode(['success' => true, 'message' => 'Cập nhật trạng thái loại tài khoản thành công.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Cập nhật trạng thái loại tài khoản thất bại.']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Vui lòng cung cấp danh sách ID và trạng thái mới.']);
+        }
+        exit();
+    }
     public function checkPassword() {
         $identifier = trim($_POST['identifier'] ?? ''); 
         $password   = trim($_POST['password'] ?? '');
