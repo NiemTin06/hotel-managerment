@@ -69,13 +69,13 @@ class ClientAccountController extends Controller {
             $_SESSION['account_error'] = 'Vui lòng nhập họ và tên.';
             redirect('/my-account');
         }
-
-        if (mb_strlen($fullname) <= 4) {
+        $fnameLength = mb_strlen($fullname, 'UTF-8');
+        if ($fnameLength <= 4) {
             $_SESSION['account_error'] = 'Họ và tên phải có nhiều hơn 4 ký tự.';
             redirect('/my-account');
         }
         
-        if (mb_strlen($fullname) > 100) {
+        if ($fnameLength > 100) {
             $_SESSION['account_error'] = 'Họ và tên không được vượt quá 100 ký tự.';
             redirect('/my-account');
         }
