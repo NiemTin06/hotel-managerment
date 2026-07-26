@@ -2,14 +2,10 @@
 
 class ClientBookingController extends Controller {
     public function index() {
-        if (!isCustomerLoggedIn()) {
-            //lưu query để giữ lại loại phòng và ngày nhận/trả đã chọn.
-            $query = $_SERVER['QUERY_STRING'] ?? '';
-            $_SESSION['redirect_after_login'] = '/bookings'
-                . ($query !== '' ? '?' . $query : '');
-            $_SESSION['auth_error'] = 'Vui lòng đăng nhập để đặt phòng.';
-            redirect('/login');
-        }
+        // luu query sau khi login truy cap lai
+        $queryString = $_SERVER['QUERY_STRING'] ?? '';
+        $redirectPath = '/bookings' . ($queryString !== '' ? '?' . $queryString : '');
+        requireCustomerLogin($redirectPath);        
 
         if (empty($_SESSION['customer_id'])) {
             unset(
@@ -47,6 +43,8 @@ class ClientBookingController extends Controller {
     }
     // API lấy loại phòng đã chọn và kiểm tra số phòng còn trống theo ngày.
     public function getData(){
+        requireCustomerLogin('/bookings');
+
         try {
             $roomTypeId = (int)($_GET['room_type_id'] ?? 0);
             if ($roomTypeId <= 0) {
@@ -95,6 +93,7 @@ class ClientBookingController extends Controller {
     }
     // kiểm tra dữ liệu, tính tổng tiền và tạo booking.
     public function process() {
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->json([
                 'success' => false,
@@ -102,14 +101,7 @@ class ClientBookingController extends Controller {
             ]);
         }
 
-        if (!isCustomerLoggedIn()) {
-            $this->json([
-                'success' => false,
-                'message' => 'Vui lòng đăng nhập để đặt phòng.',
-                'redirect_url' => URLROOT . '/login'
-            ]);
-        }
-
+        requireCustomerLogin();
         $customerId = (int)($_SESSION['customer_id'] ?? 0);
         $userId = (int)($_SESSION['user_id'] ?? 0);
 
@@ -167,7 +159,7 @@ class ClientBookingController extends Controller {
                 'message' => 'Đặt phòng thành công.',
                 'booking_id' => $bookingId,
                 'total_price' => $totalPrice,
-                'redirect_url' => URLROOT . '/my-account'
+                'redirectUrl' => URLROOT . '/my-account'
             ]);
         } catch (InvalidArgumentException $e) {
             $this->json([
@@ -219,8 +211,9 @@ class ClientBookingController extends Controller {
         return $value && $value->format('Y-m-d') === $date;
     }
 
-    private function json(array $data): void {
-        header('Content-Type: application/json; charset=utf-8');
+    private function json(array $data, int $statusCode = 200): void {
+        http_response_code($statusCode);
+        header('Content-Type: application/json; charset=UTF-8');
         echo json_encode($data, JSON_UNESCAPED_UNICODE);
         exit();
     }

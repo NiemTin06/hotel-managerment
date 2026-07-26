@@ -62,6 +62,29 @@ function isCustomerLoggedIn(): bool {
         && ($_SESSION['user_role'] ?? '') === 'Customer';
 }
 
+function requireCustomerLogin(string $redirectAfterLogin = '/'): void {
+    if (isCustomerLoggedIn() && !empty($_SESSION['customer_id'])) {
+        return;
+    }
+
+    if (isAjaxRequest()) {
+        header('Content-Type: application/json; charset=UTF-8');
+        http_response_code(401);
+
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Vui lòng đăng nhập để tiếp tục.',
+            'redirectUrl' => URLROOT . '/login'
+        ], JSON_UNESCAPED_UNICODE);
+        exit();
+    }
+
+    $_SESSION['redirect_after_login'] = $redirectAfterLogin;
+    $_SESSION['auth_error'] = 'Vui lòng đăng nhập để tiếp tục.';
+
+    redirect('/login');
+}
+
 function redirect(string $path = '/'): void {
     $url = URLROOT . '/' . ltrim($path, '/');
 

@@ -31,7 +31,9 @@ function checkSessionTimeout() {
         $_SESSION['last_activity'] = time();
         return;
     }
-
+    // check role -> hết hạn sang login or admin/login
+    $userRole = $_SESSION['user_role'] ?? '';
+    $loginUrl = $userRole === 'Customer'? URLROOT . '/login' : URLROOT . '/admin/login';
     $elapsed = time() - $_SESSION['last_activity'];
 
     if ($elapsed > SESSION_TIMEOUT) {
@@ -47,10 +49,10 @@ function checkSessionTimeout() {
             echo json_encode([
                 'status' => 'error',
                 'message' => 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!',
-                'redirectUrl' => URLROOT . '/admin/login'
+                'redirectUrl' => $loginUrl
             ]);
         } else {
-            header('Location: ' . URLROOT . '/admin/login');
+            header('Location: ' . $loginUrl);
         }
         exit();
     }

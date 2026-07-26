@@ -2,9 +2,7 @@
 
 class ClientAccountController extends Controller {
     public function index() {
-        if (!isCustomerLoggedIn()) {
-            redirect('/login');
-        }
+        requireCustomerLogin();
 
         $userId = (int)($_SESSION['user_id'] ?? 0);
         $model = $this->model('clientaccount');
@@ -25,14 +23,11 @@ class ClientAccountController extends Controller {
             redirect('/login');
         }
 
-        $customerId = (int)$account['CUSTOMER_ID'];
-
         $data = [
             'title' => 'Tài khoản của tôi',
             'view_content' => 'pages/my-account/index',
-            'page_style' => 'my-account',
+            'page_script' => 'my-account',
             'account' => $account,
-            'bookings' => $model->getBookingsByCustomerId($customerId),
             'error' => $_SESSION['account_error'] ?? '',
             'success' => $_SESSION['account_success'] ?? '',
             'old' => $_SESSION['account_old'] ?? []
@@ -47,65 +42,88 @@ class ClientAccountController extends Controller {
         $this->view('client/layout/main_layout', $data);
     }
 
-    public function update() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            redirect('/my-account');
+    public function getHistory() {
+        requireCustomerLogin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            $this->json([
+                'success' => false,
+                'message' => 'Phương thức không hợp lệ.'
+            ], 405);
         }
 
-        if (!isCustomerLoggedIn()) {
-            redirect('/login');
+        $customerId = (int)($_SESSION['customer_id'] ?? 0);
+
+        if ($customerId <= 0) {
+            $this->json([
+                'success' => false,
+                'message' => 'Phiên đăng nhập không hợp lệ.',
+                'redirectUrl' => URLROOT . '/login'
+            ], 401);
+        }
+
+        try {
+            $model = $this->model('clientaccount');
+
+            $this->json([
+                'success' => true,
+                'data' => $model->getBookingsByCustomerId($customerId)
+            ]);
+        } catch (Throwable $e) {
+            $this->json([
+                'success' => false,
+                'message' => 'Không thể tải lịch sử đặt phòng.'
+            ], 500);
+        }
+    }
+
+    public function update() {
+        requireCustomerLogin();
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->json([
+                'success' => false,
+                'message' => 'Phương thức không hợp lệ.'
+            ], 405);
         }
 
         $fullname = trim($_POST['fullname'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
         $newPassword = $_POST['new-password'] ?? '';
 
-        $_SESSION['account_old'] = [
-            'fullname' => $fullname,
-            'phone' => $phone
-        ];
-
         if ($fullname === '') {
-            $_SESSION['account_error'] = 'Vui lòng nhập họ và tên.';
-            redirect('/my-account');
+            $this->validationError('Vui lòng nhập họ và tên.');
         }
         $fnameLength = mb_strlen($fullname, 'UTF-8');
         if ($fnameLength <= 4) {
-            $_SESSION['account_error'] = 'Họ và tên phải có nhiều hơn 4 ký tự.';
-            redirect('/my-account');
+            $this->validationError('Họ và tên phải có nhiều hơn 4 ký tự.');
         }
-        
+
         if ($fnameLength > 100) {
-            $_SESSION['account_error'] = 'Họ và tên không được vượt quá 100 ký tự.';
-            redirect('/my-account');
+            $this->validationError('Họ và tên không được vượt quá 100 ký tự.');
         }
 
         if ($phone === '') {
-            $_SESSION['account_error'] = 'Vui lòng nhập số điện thoại.';
-            redirect('/my-account');
+            $this->validationError('Vui lòng nhập số điện thoại.');
         }
 
         if (!ctype_digit($phone)) {
-            $_SESSION['account_error'] = 'Số điện thoại chỉ được chứa chữ số.';
-            redirect('/my-account');
+            $this->validationError('Số điện thoại chỉ được chứa chữ số.');
         }
 
         if (strlen($phone) !== 10) {
-            $_SESSION['account_error'] = 'Số điện thoại phải có đúng 10 chữ số.';
-            redirect('/my-account');
+            $this->validationError('Số điện thoại phải có đúng 10 chữ số.');
         }
 
         if ($phone[0] !== '0') {
-            $_SESSION['account_error'] = 'Số điện thoại phải bắt đầu bằng số 0.';
-            redirect('/my-account');
+            $this->validationError('Số điện thoại phải bắt đầu bằng số 0.');
         }
 
         $passwordHash = null;
 
         if ($newPassword !== '') {
             if (strlen($newPassword) < 6) {
-                $_SESSION['account_error'] = 'Mật khẩu mới phải có ít nhất 6 ký tự.';
-                redirect('/my-account');
+                $this->validationError('Mật khẩu mới phải có ít nhất 6 ký tự.');
             }
 
             $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT);
@@ -114,8 +132,11 @@ class ClientAccountController extends Controller {
         $userId = (int)($_SESSION['user_id'] ?? 0);
 
         if ($userId <= 0) {
-            $_SESSION['auth_error'] = 'Phiên đăng nhập không hợp lệ.';
-            redirect('/login');
+            $this->json([
+                'success' => false,
+                'message' => 'Phiên đăng nhập không hợp lệ.',
+                'redirectUrl' => URLROOT . '/login'
+            ], 401);
         }
 
         $model = $this->model('clientaccount');
@@ -126,23 +147,55 @@ class ClientAccountController extends Controller {
             $_SESSION['customer_fullname'] = $fullname;
             $_SESSION['customer_phone'] = $phone;
 
-            unset($_SESSION['account_old']);
-
-            $_SESSION['account_success'] = $passwordHash !== null
-                ? 'Cập nhật thông tin và mật khẩu thành công.'
-                : 'Cập nhật thông tin thành công.';
+            $this->json([
+                'success' => true,
+                'message' => $passwordHash !== null
+                    ? 'Cập nhật thông tin và mật khẩu thành công.'
+                    : 'Cập nhật thông tin thành công.',
+                'data' => [
+                    'fullname' => $fullname,
+                    'phone' => $phone
+                ]
+            ]);
         } catch (RuntimeException $e) {
             if ($e->getMessage() === 'PHONE_EXISTS') {
-                $_SESSION['account_error'] = 'Số điện thoại đã được sử dụng.';
-            } elseif ($e->getMessage() === 'INVALID_ACCOUNT') {
-                $_SESSION['account_error'] = 'Tài khoản khách hàng không hợp lệ.';
-            } else {
-                $_SESSION['account_error'] = 'Không thể cập nhật thông tin tài khoản.';
+                $this->json([
+                    'success' => false,
+                    'message' => 'Số điện thoại đã được sử dụng.'
+                ], 409);
             }
-        } catch (Throwable $e) {
-            $_SESSION['account_error'] = 'Đã xảy ra lỗi khi cập nhật tài khoản.';
-        }
 
-        redirect('/my-account');
+            if ($e->getMessage() === 'INVALID_ACCOUNT') {
+                $this->json([
+                    'success' => false,
+                    'message' => 'Tài khoản khách hàng không hợp lệ.',
+                    'redirectUrl' => URLROOT . '/login'
+                ], 401);
+            }
+
+            $this->json([
+                'success' => false,
+                'message' => 'Không thể cập nhật thông tin tài khoản.'
+            ], 500);
+        } catch (Throwable $e) {
+            $this->json([
+                'success' => false,
+                'message' => 'Đã xảy ra lỗi khi cập nhật tài khoản.'
+            ], 500);
+        }
+    }
+
+    private function validationError(string $message): void {
+        $this->json([
+            'success' => false,
+            'message' => $message
+        ], 422);
+    }
+
+    private function json(array $data, int $statusCode = 200): void {
+        http_response_code($statusCode);
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        exit();
     }
 }

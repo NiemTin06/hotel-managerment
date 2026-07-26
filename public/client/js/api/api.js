@@ -11,30 +11,42 @@ export class API {
     }
 
     static async request(url, options = {}) {
-        if (
-            options.body
-            && !(options.body instanceof FormData)
-        ) {
-            options.headers = {
-                ...options.headers,
-                'Content-Type': 'application/json'
-            };
+        options.headers = {
+            ...options.headers,
+            'X-Requested-With': 'XMLHttpRequest'
+        };
 
+        if (options.body && !(options.body instanceof FormData)) {
+            options.headers['Content-Type'] = 'application/json';
             options.body = JSON.stringify(options.body);
         }
 
-        const response = await fetch(
-            `${APP_URLROOT}/${url}`,
-            options
-        );
-
-        const text = await response.text();
-
         try {
-            return JSON.parse(text);
+            const response = await fetch(`${APP_URLROOT}/${url}`, options);
+            const raw = await response.text();
+
+            let data;
+
+            try {
+                data = JSON.parse(raw);
+            } catch (error) {
+                console.error('Server không trả JSON:', raw);
+                throw new Error('Dữ liệu trả về không hợp lệ.');
+            }
+
+            if (response.status === 401 && data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(data.message || `HTTP Error: ${response.status}`);
+            }
+
+            return data;
         } catch (error) {
-            console.error(text);
-            throw new Error('Dữ liệu trả về không hợp lệ.');
+            console.error('API Error:', error);
+            throw error;
         }
     }
 }

@@ -217,8 +217,8 @@ form.addEventListener('submit', async function (event) {
             const result = await API.post('bookings/process', new FormData(form));
 
             if (!result.success) {
-                if (result.redirect_url) {
-                    window.location.href = result.redirect_url;
+                if (result.redirectUrl) {
+                    window.location.href = result.redirectUrl;
                     return;
                 }
 
@@ -226,7 +226,7 @@ form.addEventListener('submit', async function (event) {
                 return;
             }
 
-            window.location.href = result.redirect_url || APP_URLROOT + '/my-account';
+            window.location.href = result.redirectUrl || APP_URLROOT + '/my-account';
         } catch (error) {
             showMessage(error.message);
         } finally {

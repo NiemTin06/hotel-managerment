@@ -2,27 +2,8 @@
 /** @var array $data */
 
 $account = $data['account'] ?? [];
-$bookings = $data['bookings'] ?? [];
-$old = $data['old'] ?? [];
-
-$fullname = $old['fullname'] ?? ($account['CUSTOMER_FULLNAME'] ?? '');
-$phone = $old['phone'] ?? ($account['CUSTOMER_PHONE'] ?? $account['USER_PHONE'] ?? '');
-
-$statusNames = [
-    'Pending' => 'Chờ xác nhận',
-    'Confirmed' => 'Đã xác nhận',
-    'CheckedIn' => 'Đã nhận phòng',
-    'CheckedOut' => 'Đã trả phòng',
-    'Cancelled' => 'Đã hủy'
-];
-
-$statusClasses = [
-    'Pending' => 'text-bg-warning',
-    'Confirmed' => 'text-bg-primary',
-    'CheckedIn' => 'text-bg-success',
-    'CheckedOut' => 'text-bg-secondary',
-    'Cancelled' => 'text-bg-danger'
-];
+$fullname = $account['CUSTOMER_FULLNAME'] ?? '';
+$phone = $account['CUSTOMER_PHONE'] ?? ($account['USER_PHONE'] ?? '');
 ?>
 
 <div class="my-account-page">
@@ -49,7 +30,9 @@ $statusClasses = [
                 </div>
             <?php endif; ?>
 
-            <form action="<?php echo URLROOT; ?>/my-account/update" method="post">
+            <div id="account-message" class="d-none" role="alert"></div>
+
+            <form id="accountForm" action="<?php echo URLROOT; ?>/my-account/update" method="post">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="account-fullname" class="form-label">Họ và tên</label>
@@ -129,67 +112,31 @@ $statusClasses = [
         </div>
 
         <div class="card-body">
-            <?php if (empty($bookings)): ?>
-                <div class="alert alert-secondary text-center mb-0">
-                    Bạn chưa có đơn đặt phòng nào.
-                </div>
-            <?php else: ?>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Mã đơn</th>
-                                <th>Loại phòng</th>
-                                <th>Số phòng</th>
-                                <th>Ngày nhận</th>
-                                <th>Ngày trả</th>
-                                <th>Tổng tiền</th>
-                                <th>Trạng thái</th>
-                            </tr>
-                        </thead>
+            <div id="booking-empty" class="alert alert-secondary text-center mb-0 d-none">
+                Bạn chưa có đơn đặt phòng nào.
+            </div>
 
-                        <tbody>
-                            <?php foreach ($bookings as $booking): ?>
-                                <?php
-                                $status = $booking['BOOKING_STATUS'] ?? '';
-                                $statusName = $statusNames[$status] ?? $status;
-                                $statusClass = $statusClasses[$status] ?? 'text-bg-secondary';
-                                ?>
+            <div id="booking-table" class="table-responsive">
+                <table class="table table-bordered table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Loại phòng</th>
+                            <th>Số phòng</th>
+                            <th>Ngày nhận</th>
+                            <th>Ngày trả</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
 
-                                <tr>
-                                    <td>#<?php echo (int)$booking['BOOKING_ID']; ?></td>
-
-                                    <td>
-                                        <?php echo htmlspecialchars($booking['ROOMTYPE_NAME'] ?? '', ENT_QUOTES, 'UTF-8'); ?>
-                                    </td>
-
-                                    <td>
-                                        <?php echo htmlspecialchars($booking['ROOM_NUMBER'] ?? 'Chưa xếp phòng', ENT_QUOTES, 'UTF-8'); ?>
-                                    </td>
-
-                                    <td>
-                                        <?php echo date('d/m/Y', strtotime($booking['BOOKING_CHECKIN'])); ?>
-                                    </td>
-
-                                    <td>
-                                        <?php echo date('d/m/Y', strtotime($booking['BOOKING_CHECKOUT'])); ?>
-                                    </td>
-
-                                    <td class="text-danger fw-bold">
-                                        <?php echo number_format((float)$booking['BOOKING_TOTAL_PRICE'], 0, ',', '.'); ?> đ
-                                    </td>
-
-                                    <td>
-                                        <span class="badge <?php echo $statusClass; ?>">
-                                            <?php echo htmlspecialchars($statusName, ENT_QUOTES, 'UTF-8'); ?>
-                                        </span>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endif; ?>
+                    <tbody id="booking-history">
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">Đang tải lịch sử đặt phòng...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 </div>

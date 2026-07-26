@@ -8,7 +8,7 @@ const checkinInput = document.querySelector('#room-checkin');
 const checkoutInput = document.querySelector('#room-checkout');
 const sortSelect = document.querySelector('#sort-by');
 const message = document.querySelector('#room-filter-message');
-
+const filterForm = document.querySelector('#room-filter-form');
 const urlParams = new URLSearchParams(window.location.search);
 
 let checkin = urlParams.get('checkin') || '';
@@ -270,6 +270,40 @@ roomList.addEventListener('click', function (event) {
         window.location.href = APP_URLROOT + '/bookings?' + params.toString();
     }
 );
+
+filterForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    selectedRoomTypeId = roomTypeSelect.value;
+    selectedSort = sortSelect.value;
+    checkin = checkinInput.value;
+    checkout = checkoutInput.value;
+    checkedDate = checkin !== '' && checkout !== '';
+
+    const params = new URLSearchParams();
+
+    if (selectedRoomTypeId !== '') {
+        params.set('room-type', selectedRoomTypeId);
+    }
+
+    if (selectedSort !== '') {
+        params.set('sort-by', selectedSort);
+    }
+
+    if (checkin !== '') {
+        params.set('checkin', checkin);
+    }
+
+    if (checkout !== '') {
+        params.set('checkout', checkout);
+    }
+
+    const query = params.toString();
+    const url = APP_URLROOT + '/rooms' + (query !== '' ? '?' + query : '');
+
+    window.history.pushState({}, '', url);
+    await loadRoomTypes();
+});
 
 fillFilterFromUrl();
 loadRoomTypes();
