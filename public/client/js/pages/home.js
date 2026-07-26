@@ -11,7 +11,7 @@ let bannerImages = [];
 let bannerIndex = 0;
 let bannerTimer = null;
 
-function createBanner(roomTypes) {
+function createBanner() {
     bannerImages = [
         APP_URLROOT + '/public/client/img/hoboibuoitoi.png',
         APP_URLROOT + '/public/client/img/home/dlg-hotel-danang-facilities8.jpg',
@@ -21,17 +21,11 @@ function createBanner(roomTypes) {
     ];
 
     bannerList.innerHTML = bannerImages.map(function (imageUrl) {
-        return `
-            <div
-                class="home-banner-slide"
-                style="background-image: url('${imageUrl}')"
-            ></div>
-        `;
+        return `<div class="home-banner-slide" style="background-image: url('${imageUrl}')"></div>`;
     }).join('');
 
     bannerDots.innerHTML = bannerImages.map(function (_, index) {
-        return `<button type="button" class="home-banner-dot" data-index="${index}"></button>
-        `;
+        return `<button type="button" class="home-banner-dot" data-index="${index}"></button>`;
     }).join('');
 
     bannerIndex = 0;
@@ -76,13 +70,17 @@ nextButton.addEventListener('click', function () {
     startBanner();
 });
 
-bannerDots.addEventListener('click', function (event) {
-    const dot = event.target.closest('.home-banner-dot');
-    if (!dot) return;
-    bannerIndex = Number(dot.dataset.index);
-    showBanner();
-    startBanner();
-});
+bannerDots.addEventListener('click',
+    function (event) {
+        const dot = event.target.closest('.home-banner-dot');
+
+        if (!dot) return;
+
+        bannerIndex = Number(dot.dataset.index);
+        showBanner();
+        startBanner();
+    }
+);
 
 function showRooms(roomTypes) {
     if (roomTypes.length === 0) {
@@ -98,10 +96,8 @@ function showRooms(roomTypes) {
 
     let html = '';
 
-    roomTypes.slice(0, 3).forEach(function (roomType) {
-        const discount = Number(
-            roomType.ROOMTYPE_DISCOUNT_PERCENTAGE || 0
-        );
+    roomTypes.forEach(function (roomType) {
+        const discount = Number(roomType.ROOMTYPE_DISCOUNT_PERCENTAGE || 0);
 
         let image = `
             <div class="room-image room-image-empty">
@@ -165,31 +161,24 @@ function showRooms(roomTypes) {
                         </div>
 
                         <p class="small text-muted room-card-description">
-                            ${escapeHtml(
-                                roomType.ROOMTYPE_DESCRIPTION
-                                || 'Loại phòng chưa có mô tả.'
-                            )}
+                            ${escapeHtml(roomType.ROOMTYPE_DESCRIPTION || 'Loại phòng chưa có mô tả.')}
                         </p>
 
-                        <div class="d-flex justify-content-between align-items-end mt-auto pt-2 mb-3 border-top">
+                        <div
+                            class="d-flex justify-content-between align-items-end mt-auto pt-2 mb-3 border-top"
+                        >
                             <div>
                                 ${oldPrice}
                             </div>
 
                             <div class="text-danger text-end">
-                                <strong class="h5">
-                                    ${formatCurrency(
-                                        roomType.PRICE_AFTER_DISCOUNT
-                                    )}
-                                </strong>
-
+                                <strong class="h5">${formatCurrency(roomType.PRICE_AFTER_DISCOUNT)}</strong>
                                 <small>/ đêm</small>
                             </div>
                         </div>
 
-                        <a
-                            href="${APP_URLROOT}/rooms?room-type=${Number(roomType.ROOMTYPE_ID)}"
-                            class="btn btn-success w-100 btn-select-room-type"
+                        <a href="${APP_URLROOT}/rooms?room-type=${Number(roomType.ROOMTYPE_ID)}"
+                           class="btn btn-success w-100 btn-select-room-type"
                         >
                             Xem và đặt phòng
                         </a>
@@ -211,9 +200,7 @@ async function loadHome() {
             throw new Error(result.message);
         }
 
-        const roomTypes = result.room_types || [];
-
-        showRooms(roomTypes);
+        showRooms(result.room_types || []);
     } catch (error) {
         roomList.innerHTML = `
             <div class="col-12">
