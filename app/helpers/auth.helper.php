@@ -36,6 +36,20 @@ function requireLogin() {
         }
         exit();
     }
+    if (currentUserRole() === 'Customer') {
+        if (isAjaxRequest()) {
+            header('Content-Type: application/json; charset=UTF-8');
+            http_response_code(403);
+
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Bạn không có quyền truy cập trang quản trị.'
+            ], JSON_UNESCAPED_UNICODE);
+            exit();
+        }
+
+        redirect('/');
+    }
 }
 
 function requireRole($role) {
