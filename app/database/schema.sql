@@ -67,7 +67,6 @@ CREATE TABLE `Booking` (
     `BOOKING_ROOM_ID` INT DEFAULT NULL, 
     `BOOKING_CHECKIN` DATETIME NOT NULL,
     `BOOKING_CHECKOUT` DATETIME NOT NULL,
-    Giá phòng thời điểm đặt
     `BOOKING_TOTAL_PRICE` DECIMAL(10,2) NOT NULL,
     `BOOKING_STATUS` ENUM('Pending', 'Confirmed', 'CheckedIn', 'CheckedOut', 'Cancelled') DEFAULT 'Pending',
     `BOOKING_NOTE` TEXT,
