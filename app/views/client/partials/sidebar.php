@@ -9,7 +9,7 @@
         </button>
     </div>
 
-    <hr class="text-secondary mt-0">
+    <hr class="text-light mt-0">
 
     <ul class="nav nav-pills flex-column">
         <li class="nav-item">

@@ -1,10 +1,11 @@
 <!-- app/views/admin/partials/sidebar.php -->
-<aside id="main-sidebar" class="sidebar text-whited-flex flex-column">
+<aside id="main-sidebar" class="sidebar text-white d-flex flex-column">
     
     <!-- Nút Toggle đóng/mở -->
     <div class="d-flex align-items-center justify-content-center mb-3">
         <button id="sidebar-toggle" class="btn btn-outline-light btn-sm border-0">
-            <span class="bi bi-list fs-4"> ☰  </span>
+            <span class="fs-4">☰</span>
+            <span class="sidebar-menu-text">Menu</span>
         </button>
     </div>
 

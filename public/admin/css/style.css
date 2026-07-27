@@ -231,6 +231,13 @@ main.inner-wrap {
     background-color: #333333;
 }
 
+.sidebar-menu-text {
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 /* CSS khi thu nhỏ Sidebar (Collapse state) */
 .sidebar.collapsed {
     width: 65px;
@@ -298,11 +305,29 @@ main.inner-wrap {
     min-width: 220px;
 }
 
+.user-info,
+.btn-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.user-info i,
+.btn-logout i {
+  font-size: 18px;
+}
+
+.btn-logout {
+  border: none;
+}
+
 /* Mobile */
 @media (max-width: 768px) {
 
     .content {
-        padding: 10px;
+        width: 100%;
+        overflow-x: hidden;
+        padding: 12px;
     }
 
     .table {
@@ -319,4 +344,60 @@ main.inner-wrap {
         font-size: 12px;
         padding: .25rem .5rem;
     }
+    main.inner-wrap {
+      display: block;
+    }
+
+    .sidebar,
+    .sidebar.collapsed {
+      width: 100%;
+      min-width: 100%;
+      min-height: auto;
+    }
+
+    .sidebar .link-text,
+    .sidebar.collapsed .link-text {
+      display: inline;
+    }
+
+    .sidebar .nav-link,
+    .sidebar.collapsed .nav-link {
+      justify-content: flex-start;
+    }
+
+    .sidebar .nav-link i,
+    .sidebar.collapsed .nav-link i {
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar #sidebar-toggle,
+    .sidebar.collapsed #sidebar-toggle {
+      display: block;
+      width: 100%;
+      margin: 0;
+    }
+    .sidebar.collapsed hr,
+    .sidebar.collapsed .nav {
+      display: none;
+    }
+    .user-name,
+    .user-role,
+    .logout-text {
+      display: none;
+    }
+
+    .user-info,
+    .btn-logout {
+      margin-left: 8px;
+    }
+
+    .btn-logout {
+      padding: 5px 8px;
+    }
+
+    .user-info i,
+    .btn-logout i {
+      font-size: 19px;
+    }    
 }

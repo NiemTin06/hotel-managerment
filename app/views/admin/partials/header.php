@@ -11,10 +11,13 @@
             </span>
 
             <a href="<?php echo URLROOT; ?>/admin/logout" 
-               class="btn-logout"
-               onclick="return confirm('Bạn có chắc muốn đăng xuất?')">
-                Đăng Xuất
+                class="btn-logout"
+                tittle="Đăng Xuất"
+                onclick="return confirm('Bạn có chắc muốn đăng xuất?')">
+                <i class="bi bi-box-arrow-right"></i>
+                <span class="logout-text">Đăng xuất</span>
             </a>
+
         <?php else: ?>
             <a href="<?php echo URLROOT; ?>/admin/login" class="nav-link">Đăng Nhập</a>
         <?php endif; ?>
