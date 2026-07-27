@@ -1,8 +1,6 @@
 <div class="auth-page">
     <section class="auth-card auth-register-card">
         <div class="auth-brand">
-            <img src="<?php echo URLROOT; ?>/public/client/img/black-cat-logo.png" alt="Neko Hotel">
-
             <div>
                 <a href="<?php echo URLROOT; ?>/">Neko Hotel</a>
                 <p>Hệ thống đặt phòng khách sạn</p>
