@@ -53,7 +53,7 @@ export function renderBooking(bookings, container) {
         return `
             <tr>
                 <td class="align-middle"><input type="checkbox" name="id" value="${item.BOOKING_ID}"></td>
-                <td class="align-middle fw-bold">#${item.BOOKING_ID}</td>
+                <td class="align-middle fw-bold">#${item.BOOKING_CODE}</td>
                 <td class="align-middle">
                     <b class="text-dark">${item.CUSTOMER_FULLNAME || 'Khách vãng lai'}</b><br>
                     <small class="text-primary fw-semibold">${item.CUSTOMER_PHONE || '---'}</small>

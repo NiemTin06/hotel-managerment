@@ -1,3 +1,11 @@
+DROP DATABASE IF EXISTS HotelManager;
+
+CREATE DATABASE HotelManager
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE HotelManager;
+
 CREATE TABLE `User` (
     `USER_ID` INT AUTO_INCREMENT PRIMARY KEY,
     `USER_USERNAME` VARCHAR(50) NOT NULL UNIQUE,
@@ -20,7 +28,7 @@ CREATE TABLE `Customer` (
     
     CONSTRAINT `FK_CUSTOMER_USER`
         FOREIGN KEY (`CUSTOMER_USER_ID`)
-        REFERENCES `User`(`USER_ID`) ON DELETE SET NULL
+        REFERENCES `User`(`USER_ID`)
 );
 
 CREATE TABLE `RoomType` (
@@ -59,7 +67,7 @@ CREATE TABLE `Booking` (
     `BOOKING_ROOM_ID` INT DEFAULT NULL, -- Gán số phòng cụ thể khi Check-in hoặc Xếp phòng
     `BOOKING_CHECKIN` DATETIME NOT NULL,
     `BOOKING_CHECKOUT` DATETIME NOT NULL,
-    `BOOKING_PRICE_PER_NIGHT` DECIMAL(10,2) NOT NULL, -- Giá phòng thời điểm đặt
+    Giá phòng thời điểm đặt
     `BOOKING_TOTAL_PRICE` DECIMAL(10,2) NOT NULL,
     `BOOKING_STATUS` ENUM('Pending', 'Confirmed', 'CheckedIn', 'CheckedOut', 'Cancelled') DEFAULT 'Pending',
     `BOOKING_NOTE` TEXT,

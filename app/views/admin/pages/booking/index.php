@@ -31,6 +31,9 @@ $statusOptions = [
     "CheckedOut" => "Đã trả phòng",
     "Cancelled" => "Đã hủy"
 ];
+$status = [
+    ["label" => "Xóa đặt phòng ", "value" => "Delete"]
+];
 ?>
 <div class="container py-4">
     <div class="text-center mb-4">

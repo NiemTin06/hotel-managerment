@@ -1,6 +1,8 @@
 <?php
-class BookingsModel extends Database {
-    public function getAllBookings(array $filters = []): array {
+class BookingsModel extends Database
+{
+    public function getAllBookings(array $filters = []): array
+    {
         $sql = "
             SELECT 
                 b.*,
@@ -72,7 +74,8 @@ class BookingsModel extends Database {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function count(array $filters = []): int {
+    public function count(array $filters = []): int
+    {
         $sql = "
             SELECT COUNT(*) 
             FROM Booking b
@@ -101,7 +104,8 @@ class BookingsModel extends Database {
         return (int)$stmt->fetchColumn();
     }
 
-    public function getBookingById(int $id) {
+    public function getBookingById(int $id)
+    {
         $sql = "
             SELECT b.*, c.CUSTOMER_FULLNAME, c.CUSTOMER_PHONE, rt.ROOMTYPE_NAME, r.ROOM_NUMBER
             FROM Booking b
@@ -117,7 +121,8 @@ class BookingsModel extends Database {
     }
 
     // Lấy danh sách phòng trống của 1 Loại phòng để Lễ tân chọn lúc Check-in
-    public function getAvailableRoomsByTypeId(int $roomTypeId): array {
+    public function getAvailableRoomsByTypeId(int $roomTypeId): array
+    {
         $sql = "SELECT ROOM_ID, ROOM_NUMBER, ROOM_DESCRIPTION FROM Room WHERE ROOM_ROOMTYPE_ID = ? AND ROOM_STATUS = 'Available'";
         $stmt = $this->connect()->prepare($sql);
         $stmt->bindValue(1, $roomTypeId, PDO::PARAM_INT);
@@ -125,14 +130,23 @@ class BookingsModel extends Database {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function addBooking(array $data): bool {
+    public function addBooking(array $data): bool
+    {
         $sql = "
             INSERT INTO Booking (
-                BOOKING_CUSTOMER_ID, BOOKING_ROOMTYPE_ID, BOOKING_CHECKIN, 
+                  BOOKING_CODE,BOOKING_CUSTOMER_ID, BOOKING_ROOMTYPE_ID, BOOKING_CHECKIN, 
                 BOOKING_CHECKOUT, BOOKING_TOTAL_PRICE, BOOKING_STATUS, BOOKING_NOTE
-            ) VALUES (:customer, :roomtype, :checkin, :checkout, :price, :status, :note)
+            ) VALUES (:code,
+                        :customer,
+                        :roomtype,
+                        :checkin,
+                        :checkout,
+                        :price,
+                        :status,
+                        :note)
         ";
         $stmt = $this->connect()->prepare($sql);
+        $stmt->bindParam(":code", $data['bookingCode']);
         $stmt->bindParam(":customer", $data['customerId'], PDO::PARAM_INT);
         $stmt->bindParam(":roomtype", $data['roomTypeId'], PDO::PARAM_INT);
         $stmt->bindParam(":checkin", $data['checkin']);
@@ -144,7 +158,8 @@ class BookingsModel extends Database {
     }
 
     // Nghiệp vụ Lễ tân xác nhận Check-in gán số phòng
-    public function checkInBooking(int $bookingId, int $roomId): bool {
+    public function checkInBooking(int $bookingId, int $roomId): bool
+    {
         try {
             $db = $this->connect();
             $db->beginTransaction();
@@ -168,7 +183,8 @@ class BookingsModel extends Database {
     }
 
     // Nghiệp vụ Trả phòng Check-out
-    public function checkOutBooking(int $bookingId, ?int $roomId = null): bool {
+    public function checkOutBooking(int $bookingId, ?int $roomId = null): bool
+    {
         try {
             $db = $this->connect();
             $db->beginTransaction();
@@ -191,18 +207,69 @@ class BookingsModel extends Database {
         }
     }
 
-    public function deleteBooking(array $ids): bool {
+    public function deleteBooking(array $ids): bool
+    {
         if (empty($ids)) return false;
-        $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $sql = "DELETE FROM Booking WHERE BOOKING_ID IN ($placeholders)";
-        $stmt = $this->connect()->prepare($sql);
-        foreach ($ids as $index => $id) {
-            $stmt->bindValue($index + 1, (int)$id, PDO::PARAM_INT);
+        $db = $this->connect();
+
+        try {
+            $db->beginTransaction();
+
+            // Lấy các phòng đã được gán
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+            $sql = "
+            SELECT BOOKING_ROOM_ID
+            FROM Booking
+            WHERE BOOKING_ID IN ($placeholders)
+            AND BOOKING_ROOM_ID IS NOT NULL
+        ";
+
+            $stmt = $db->prepare($sql);
+
+            foreach ($ids as $index => $id) {
+                $stmt->bindValue($index + 1, (int)$id, PDO::PARAM_INT);
+            }
+
+            $stmt->execute();
+            $rooms = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            // Trả trạng thái phòng về Available
+            if (!empty($rooms)) {
+                $roomPlaceholders = implode(',', array_fill(0, count($rooms), '?'));
+
+                $sql = "UPDATE Room
+                    SET ROOM_STATUS = 'Available'
+                    WHERE ROOM_ID IN ($roomPlaceholders)";
+
+                $stmt = $db->prepare($sql);
+
+                foreach ($rooms as $index => $roomId) {
+                    $stmt->bindValue($index + 1, (int)$roomId, PDO::PARAM_INT);
+                }
+
+                $stmt->execute();
+            }
+
+            // Xóa booking
+            $sql = "DELETE FROM Booking WHERE BOOKING_ID IN ($placeholders)";
+            $stmt = $db->prepare($sql);
+
+            foreach ($ids as $index => $id) {
+                $stmt->bindValue($index + 1, (int)$id, PDO::PARAM_INT);
+            }
+
+            $stmt->execute();
+
+            $db->commit();
+            return true;
+        } catch (Throwable $e) {
+            $db->rollBack();
+            return false;
         }
-        return $stmt->execute();
     }
 
-    public function updateBooking(int $id, array $data): bool {
+    public function updateBooking(int $id, array $data): bool{
         $sql = "
             UPDATE Booking SET 
                 BOOKING_CUSTOMER_ID = :customer,
@@ -225,4 +292,61 @@ class BookingsModel extends Database {
         $stmt->bindParam(":id", $id, PDO::PARAM_INT);
         return $stmt->execute();
     }
+    public function generateBookingCode(){
+        $today = date('Ymd');
+
+        $sql = "
+            SELECT BOOKING_CODE
+            FROM Booking
+            WHERE BOOKING_CODE LIKE ?
+            ORDER BY BOOKING_ID DESC
+            LIMIT 1
+        ";
+
+        $stmt = $this->connect()->prepare($sql);
+        $prefix = "BK{$today}%";
+        $stmt->execute([$prefix]);
+        $lastCode = $stmt->fetchColumn();
+        if (!$lastCode) {
+            return "BK{$today}0001";
+        }
+        $number = (int)substr($lastCode, -4);
+        $number++;
+        return "BK{$today}" . str_pad($number, 4, "0", STR_PAD_LEFT);
+    }
+    // public function assignRoom(int $bookingId,int $roomId){
+    //     $db = $this->connect();
+
+    //     try{
+    //         $db->beginTransaction();
+
+    //         // lưu phòng cho booking
+    //         $stmt=$db->prepare("
+    //             UPDATE Booking
+    //             SET BOOKING_ROOM_ID=?,
+    //                 BOOKING_STATUS='Confirmed'
+    //             WHERE BOOKING_ID=?
+    //         ");
+
+    //         $stmt->execute([$roomId,$bookingId]);
+
+    //         // phòng chuyển sang Reserved
+    //         $stmt=$db->prepare("
+    //             UPDATE Room
+    //             SET ROOM_STATUS='Reserved'
+    //             WHERE ROOM_ID=?
+    //         ");
+
+    //         $stmt->execute([$roomId]);
+
+    //         $db->commit();
+
+    //         return true;
+
+    //     }catch(Throwable $e){
+
+    //         $db->rollBack();
+    //         return false;
+    //     }
+    // }
 }

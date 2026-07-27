@@ -20,3 +20,4 @@ require_once 'app/routes/client/index.route.php';
 
 // 5. Kích hoạt hệ thống quét URL
 $app->run();
+

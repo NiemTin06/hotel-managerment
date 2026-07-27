@@ -1,15 +1,29 @@
 <div class="inner-login">
-        <h4 class ="login-title">Login </h4>
-        <form id="loginForm">
-             <div data-mdb-input-init class="form-outline mb-4">
-                <input type="text" name = "userInput" id="form2Example1" class="form-control" />
-                <label class="form-label" for="form2Example1">Email address</label>
-            </div>
-            <div data-mdb-input-init class="form-outline mb-4">
-                <input type="password" name = "pwd"id="form2Example2" class="form-control" />
-                <label class="form-label" for="form2Example2">Password</label>
-            </div>
-             <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4">Login</button>
-        </form>
-    </div>
-   
+    <h3 class="login-title">Hotel Manager</h3>
+
+    <form id="loginForm">
+
+        <div class="mb-3">
+            <label class="form-label">Email hoặc Username</label>
+            <input
+                type="text"
+                class="form-control"
+                name="userInput"
+                placeholder="Nhập email hoặc username">
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Mật khẩu</label>
+            <input
+                type="password"
+                class="form-control"
+                name="pwd"
+                placeholder="Nhập mật khẩu">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">
+            Đăng nhập
+        </button>
+
+    </form>
+</div>

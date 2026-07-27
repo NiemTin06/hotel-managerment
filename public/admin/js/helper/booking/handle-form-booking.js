@@ -4,9 +4,7 @@ import { renderBooking } from "./render-booking.js";
 import { getQueryString } from "../common/url.js";
 import { bindUpdateBookingButton } from "./update-booking.js";
 
-// =========================================================================
-// HÀM CHUYÊN DỤNG: Chủ động tải Khách hàng & Loại phòng vào thẻ Select
-// =========================================================================
+
 async function loadSelectOptions() {
     const selectCustomer = document.querySelector("#select-customer");
     const selectRoomType = document.querySelector("#select-roomtype");
@@ -36,7 +34,7 @@ async function loadSelectOptions() {
         }
     } catch (error) {
         console.error("Lỗi khi tải danh sách ô Select:", error);
-        if (selectCustomer) selectCustomer.innerHTML = `<option value="">⚠️ Lỗi tải danh sách</option>`;
+        if (selectCustomer) selectCustomer.innerHTML = `<option value=""> Lỗi tải danh sách</option>`;
     }
 }
 
@@ -68,7 +66,6 @@ export function handleFormBooking() {
         };
     }
 
-    // 2. KHI BẤM NÚT SỬA -> Nạp danh sách xong mới chọn đúng khách hàng cũ
     btnsUpdate.forEach(btn => {
         btn.onclick = async () => {
             await loadSelectOptions(); // <-- Nạp danh sách trước

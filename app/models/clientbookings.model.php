@@ -7,7 +7,7 @@ class ClientbookingsModel extends Database {
 
         try {
             $db->beginTransaction();
-
+            $bookingCode = $this->generateBookingCode();
             $customerStmt = $db->prepare("
             SELECT c.CUSTOMER_ID
             FROM Customer c
@@ -62,6 +62,7 @@ class ClientbookingsModel extends Database {
 
             $insert = $db->prepare("
                 INSERT INTO Booking (
+                    BOOKING_CODE,
                     BOOKING_CUSTOMER_ID,
                     BOOKING_ROOMTYPE_ID,
                     BOOKING_ROOM_ID,
@@ -71,6 +72,7 @@ class ClientbookingsModel extends Database {
                     BOOKING_STATUS,
                     BOOKING_NOTE
                 ) VALUES (
+                   :booking_code,
                     :customer_id,
                     :room_type_id,
                     NULL,
@@ -83,13 +85,14 @@ class ClientbookingsModel extends Database {
             ");
 
             $insert->execute([
-                ':customer_id' => $customerId,
+                ':booking_code' => $bookingCode,
+                ':customer_id'  => $customerId,
                 ':room_type_id' => $booking['roomTypeId'],
-                ':checkin' => $booking['checkin'],
-                ':checkout' => $booking['checkout'],
-                ':total_price' => $booking['totalPrice'],
-                ':note' => $booking['note'] !== '' ? $booking['note'] : null
-            ]);
+                ':checkin'      => $booking['checkin'],
+                ':checkout'     => $booking['checkout'],
+                ':total_price'  => $booking['totalPrice'],
+                ':note'         => $booking['note'] !== '' ? $booking['note'] : null
+                        ]);
 
             $bookingId = (int)$db->lastInsertId();
             $db->commit();
@@ -101,4 +104,31 @@ class ClientbookingsModel extends Database {
             throw $e;
         }
     }
+    public function generateBookingCode()
+{
+    $today = date('Ymd');
+
+    $sql = "
+        SELECT BOOKING_CODE
+        FROM Booking
+        WHERE BOOKING_CODE LIKE ?
+        ORDER BY BOOKING_CODE DESC
+        LIMIT 1
+    ";
+
+    $stmt = $this->connect()->prepare($sql);
+
+    $stmt->execute(["BK{$today}%"]);
+
+    $lastCode = $stmt->fetchColumn();
+
+    if (!$lastCode) {
+        return "BK{$today}0001";
+    }
+
+    $number = (int)substr($lastCode, -4);
+    $number++;
+
+    return "BK{$today}" . str_pad($number, 4, "0", STR_PAD_LEFT);
+}
 }

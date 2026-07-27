@@ -27,4 +27,76 @@
             ?>
         </h2>
     </div>
+    <!-- Thống kê -->
+    <div class="row g-4 mb-5">
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body text-center">
+                    <h2 class="text-primary">120</h2>
+                    <p class="mb-0">Phòng</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body text-center">
+                    <h2 class="text-success">85</h2>
+                    <p class="mb-0">Đang sử dụng</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body text-center">
+                    <h2 class="text-warning">20</h2>
+                    <p class="mb-0">Đã đặt</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="card shadow border-0">
+                <div class="card-body text-center">
+                    <h2 class="text-danger">15</h2>
+                    <p class="mb-0">Bảo trì</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Biểu đồ -->
+    <div class="row">
+
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow border-0">
+                <div class="card-header">
+                    Tỷ lệ trạng thái phòng
+                </div>
+
+                <div class="card-body">
+                    <canvas id="roomChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow border-0">
+                <div class="card-header">
+                    Đặt phòng theo tháng
+                </div>
+
+                <div class="card-body">
+                    <canvas id="bookingChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

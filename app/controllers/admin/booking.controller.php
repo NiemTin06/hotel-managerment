@@ -51,6 +51,7 @@ class BookingController extends Controller {
     public function create() {
         try {
             $data = [
+                 "bookingCode" => $this->generateBookingCode(),
                 "customerId" => (int)($_POST['booking-customer'] ?? 0),
                 "roomTypeId" => (int)($_POST['booking-roomtype'] ?? 0),
                 "checkin"    => trim($_POST['booking-checkin'] ?? ''),
@@ -173,6 +174,18 @@ class BookingController extends Controller {
             exit();
         }
     }
+    private function generateBookingCode(){
+        $model = $this->model("bookings");
+        return $model->generateBookingCode();
+    }
 
-    
+    // public function assignRoom($id){
+    //     $input = json_decode(file_get_contents('php://input'), true);
+    //     $roomId = (int)$input['roomId'];
+    //     $model = $this->model("bookings");
+    //     $result = $model->assignRoom($id,$roomId);
+    //     echo json_encode([
+    //         "success"=>$result
+    //     ]);
+    // }
 }
