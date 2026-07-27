@@ -107,7 +107,7 @@ function renderBookingHistory(bookings, tableBody) {
 
         return `
             <tr>
-                <td>#${Number(booking.BOOKING_ID)}</td>
+                <td>#${booking.BOOKING_CODE}</td>
                 <td>${escapeHtml(booking.ROOMTYPE_NAME || '')}</td>
                 <td>${escapeHtml(booking.ROOM_NUMBER || 'Chưa xếp phòng')}</td>
                 <td>${formatDate(booking.BOOKING_CHECKIN)}</td>

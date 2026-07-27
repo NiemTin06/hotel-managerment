@@ -148,7 +148,7 @@ class ClientaccountModel extends Database {
     // Lấy toàn bộ đơn đặt phòng của Customer.
     public function getBookingsByCustomerId(int $customerId): array {
         $sql = "SELECT
-                    b.BOOKING_ID,
+                    b.BOOKING_CODE,
                     b.BOOKING_CHECKIN,
                     b.BOOKING_CHECKOUT,
                     b.BOOKING_TOTAL_PRICE,
