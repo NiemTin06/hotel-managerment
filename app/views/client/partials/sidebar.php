@@ -1,5 +1,5 @@
 <!-- app/views/client/partials/sidebar.php -->
-<aside id="main-sidebar" class="sidebar collapsed text-white d-flex flex-column">
+<aside id="main-sidebar" class="sidebar text-white d-flex flex-column">
 
     <!-- Nút đóng/mở sidebar -->
     <div class="d-flex align-items-center justify-content-center mb-3">
