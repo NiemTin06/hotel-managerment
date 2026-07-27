@@ -9,7 +9,8 @@ $customerName = $_SESSION['customer_fullname']
 
 <header class="client-header">
     <div class="client-logo">
-        <a href="<?php echo URLROOT; ?>/">HOTEL MANAGER</a>
+        <img src="<?php echo URLROOT; ?>/public/client/img/cute_cat.png" alt="Neko Hotel" width=48 height=48>
+        <a href="<?php echo URLROOT; ?>/">NEKO HOTEL</a>
     </div>
 
     <nav class="client-nav">
