@@ -20,7 +20,7 @@ class RoomController extends Controller
     }
     public function getRoomData(){
         $page = max(1, (int)($_GET['page'] ?? 1));
-        $limit = 5;
+        $limit = 30;
         $offset = ($page - 1) * $limit;
         $filter = [
             'search' => trim($_GET['search'] ?? ''),
