@@ -5,7 +5,7 @@
     <div class="d-flex align-items-center justify-content-center mb-3">
         <button id="sidebar-toggle" class="btn btn-outline-light btn-sm border-0">
             <span class="fs-4">☰</span>
-            <span class="sidebar-menu-text">Menu</span>
+            <span class="sidebar-menu-text link-text">Menu</span>
         </button>
     </div>
 
